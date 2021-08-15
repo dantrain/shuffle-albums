@@ -1,54 +1,99 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import "twin.macro";
 import fetcher from "../utils/fetcher";
 
-const useAlbums = () => {
-  const { data, error } = useSWR<{
-    items: {
-      album: {
-        id: string;
-        name: string;
-        images: { url: string; width: number; height: number }[];
-      };
-    }[];
-    total: number;
-  }>("/me/albums?limit=50", fetcher);
-
-  console.log(data?.total);
+const useAlbumsCount = () => {
+  const { data, error } = useSWR<{ total: number }>(
+    "/me/albums?limit=1",
+    fetcher
+  );
 
   return {
-    albums: data?.items.map((item) => item.album),
+    total: data?.total,
     isLoading: !error && !data,
     isError: error,
   };
 };
 
-const Albums = () => {
-  const { albums, isLoading, isError } = useAlbums();
+const AlbumShuffler = () => {
+  const { total, isLoading, isError } = useAlbumsCount();
+  const [randomIndex, setRandomIndex] = useState(0);
+
+  const shuffle = useCallback(() => {
+    setRandomIndex((Math.random() * total!) | 0);
+  }, [total]);
+
+  useEffect(() => {
+    if (total) {
+      shuffle();
+    }
+  }, [shuffle, total]);
 
   if (isError) return <p>Failed to load</p>;
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return null;
+
+  return <Album offset={randomIndex} onShuffle={shuffle} />;
+};
+
+const useAlbum = (offset: number) => {
+  const { data, error } = useSWR<{
+    items: {
+      album: {
+        id: string;
+        name: string;
+        uri: string;
+        artists: { name: string }[];
+        images: { url: string; width: number; height: number }[];
+      };
+    }[];
+  }>(`/me/albums?limit=1&offset=${offset}`, fetcher);
+
+  return {
+    album: data?.items[0].album!,
+    isLoading: !error && !data,
+    isError: error,
+  };
+};
+
+const Album = ({
+  offset,
+  onShuffle: shuffle,
+}: {
+  offset: number;
+  onShuffle: () => void;
+}) => {
+  const { album, isLoading, isError } = useAlbum(offset);
+
+  if (isError) return <p>Failed to load</p>;
+  if (isLoading) return null;
+
+  const image = album.images[0];
 
   return (
-    <ul tw="grid grid-cols-10 gap-4">
-      {albums?.map((album) => {
-        const image = album.images[0];
-
-        return (
-          <li key={album.id}>
-            <Image
-              src={image.url}
-              alt={album.name}
-              width={image.width}
-              height={image.height}
-            />
-          </li>
-        );
-      })}
-    </ul>
+    <div tw="text-center">
+      <div tw="mx-auto mb-8" style={{ width: 640, height: 640 }}>
+        <a href={album.uri}>
+          <Image
+            src={image.url}
+            alt={album.name}
+            width={image.width}
+            height={image.height}
+          />
+        </a>
+      </div>
+      <p tw="mb-2 text-2xl font-bold">{album.name}</p>
+      <p tw="text-lg text-gray-400 mb-11">{album.artists[0].name}</p>
+      <button
+        tw="block px-8 py-3 mx-auto font-bold tracking-widest text-white uppercase rounded-full bg-spotify-green focus:outline-none"
+        onClick={shuffle}
+      >
+        Shuffle
+      </button>
+    </div>
   );
 };
 
@@ -61,12 +106,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1 tw="mb-6 text-2xl font-bold">Spotify Albums</h1>
-
-        <div tw="my-3">
-          <Albums />
-        </div>
+      <main tw="mt-20">
+        <AlbumShuffler />
       </main>
     </div>
   );
