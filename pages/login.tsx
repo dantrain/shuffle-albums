@@ -16,7 +16,7 @@ const Login: NextPage = () => {
       `${window.location.origin}/logincallback`
     );
 
-    const url = `https://accounts.spotify.com/authorize?client_id=6f98c6279d3246198cea51b14bc73c1b&response_type=code&redirect_uri=${redirectUri}&code_challenge_method=S256&code_challenge=${codeChallenge}&state=${state}&scope=user-library-read`;
+    const url = `https://accounts.spotify.com/authorize?client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}&response_type=code&redirect_uri=${redirectUri}&code_challenge_method=S256&code_challenge=${codeChallenge}&state=${state}&scope=user-library-read`;
 
     window.location.href = url;
   };

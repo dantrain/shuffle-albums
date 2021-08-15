@@ -27,7 +27,7 @@ const LoginCallback: NextPage = () => {
         const res = await fetch("https://accounts.spotify.com/api/token", {
           method: "POST",
           body: new URLSearchParams({
-            client_id: "6f98c6279d3246198cea51b14bc73c1b",
+            client_id: process.env.NEXT_PUBLIC_CLIENT_ID!,
             grant_type: "authorization_code",
             code: urlParams.get("code")!,
             redirect_uri: `${window.location.origin}/logincallback`,
