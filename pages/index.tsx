@@ -1,6 +1,17 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import useSWR from "swr";
 import "twin.macro";
+import fetcher from "../utils/fetcher";
+
+const Data = () => {
+  const { data, error } = useSWR<{ foo: string }>("/api/albums", fetcher);
+
+  if (error) return <p>Failed to load</p>;
+  if (!data) return <p>Loading...</p>;
+
+  return <p>Hello {data.foo}!</p>;
+};
 
 const Home: NextPage = () => (
   <div>
@@ -16,6 +27,10 @@ const Home: NextPage = () => (
       <p>
         Get started by editing <code>pages/index.js</code>
       </p>
+
+      <div tw="my-3">
+        <Data />
+      </div>
     </main>
   </div>
 );
