@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import "twin.macro";
+import Button from "../components/Button";
 import { generateRandomString, pkceChallengeFromVerifier } from "../utils/auth";
 
 const Login: NextPage = () => {
@@ -22,9 +23,9 @@ const Login: NextPage = () => {
   };
 
   return (
-    <button onClick={handleLogin} tw="px-5 py-1 text-white bg-black rounded-md">
-      Login with Spotify
-    </button>
+    <div tw="flex justify-center mt-20">
+      <Button onClick={handleLogin}>Login with Spotify</Button>
+    </div>
   );
 };
 

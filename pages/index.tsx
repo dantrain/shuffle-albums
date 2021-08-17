@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import "twin.macro";
+import Button from "../components/Button";
 import fetcher from "../utils/fetcher";
 
 const useAlbumsCount = () => {
@@ -87,12 +88,9 @@ const Album = ({
       </div>
       <p tw="mb-2 text-2xl font-bold">{album.name}</p>
       <p tw="text-lg text-gray-400 mb-11">{album.artists[0].name}</p>
-      <button
-        tw="block px-8 py-3 mx-auto font-bold tracking-widest text-white uppercase rounded-full bg-spotify-green focus:outline-none"
-        onClick={shuffle}
-      >
-        Shuffle
-      </button>
+      <div tw="flex justify-center mb-20">
+        <Button onClick={shuffle}>Shuffle</Button>
+      </div>
     </div>
   );
 };
