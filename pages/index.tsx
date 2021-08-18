@@ -1,3 +1,4 @@
+import { range, shuffle } from "lodash-es";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -20,24 +21,44 @@ const useAlbumsCount = () => {
   };
 };
 
+const getOffset = (shuffledOffsets: number[], index: number) =>
+  shuffledOffsets[index % shuffledOffsets.length];
+
 const AlbumShuffler = () => {
   const { total, isLoading, isError } = useAlbumsCount();
-  const [randomIndex, setRandomIndex] = useState(0);
-
-  const shuffle = useCallback(() => {
-    setRandomIndex((Math.random() * total!) | 0);
-  }, [total]);
+  const [shuffledOffsets, setShuffledOffsets] = useState<number[]>([]);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     if (total) {
-      shuffle();
+      setShuffledOffsets(shuffle(range(total)));
     }
-  }, [shuffle, total]);
+  }, [total]);
+
+  const handleShuffle = useCallback(() => {
+    setIndex((offset) => offset + 1);
+  }, []);
 
   if (isError) return <p>Failed to load</p>;
   if (isLoading) return null;
 
-  return <Album offset={randomIndex} onShuffle={shuffle} />;
+  return (
+    <>
+      <Album
+        offset={getOffset(shuffledOffsets, index)}
+        onShuffle={handleShuffle}
+      />
+      <div tw="sr-only">
+        {range(4).map((rangeIndex) => (
+          <Album
+            key={rangeIndex}
+            offset={getOffset(shuffledOffsets, index + rangeIndex + 1)}
+            onShuffle={handleShuffle}
+          />
+        ))}
+      </div>
+    </>
+  );
 };
 
 const useAlbum = (offset: number) => {
