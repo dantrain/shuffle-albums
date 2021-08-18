@@ -40,7 +40,7 @@ const AlbumShuffler = () => {
   }, []);
 
   if (isError) return <p>Failed to load</p>;
-  if (isLoading) return null;
+  if (isLoading || !shuffledOffsets.length) return null;
 
   return (
     <>
@@ -68,7 +68,7 @@ const useAlbum = (offset: number) => {
         id: string;
         name: string;
         uri: string;
-        artists: { name: string }[];
+        artists: { name: string; uri: string }[];
         images: { url: string; width: number; height: number }[];
       };
     }[];
@@ -97,18 +97,26 @@ const Album = ({
 
   return (
     <div tw="text-center">
-      <div tw="mx-auto mb-8" style={{ width: 640, height: 640 }}>
-        <a href={album.uri}>
+      <div
+        tw="mx-auto mb-8 overflow-hidden rounded-sm  shadow-3xl"
+        style={{ width: 640, height: 640 }}
+      >
+        <a tw="relative block" href={album.uri}>
           <Image
             src={image.url}
             alt={album.name}
             width={image.width}
             height={image.height}
           />
+          <div tw="absolute inset-0 shadow-inset" />
         </a>
       </div>
-      <p tw="mb-2 text-2xl font-bold">{album.name}</p>
-      <p tw="text-lg text-gray-400 mb-11">{album.artists[0].name}</p>
+      <p tw="mb-2 text-2xl font-bold">
+        <a href={album.uri}>{album.name}</a>
+      </p>
+      <p tw="text-lg text-gray-400 mb-11">
+        <a href={album.artists[0].uri}>{album.artists[0].name}</a>
+      </p>
       <div tw="flex justify-center mb-20">
         <Button onClick={shuffle}>Shuffle</Button>
       </div>

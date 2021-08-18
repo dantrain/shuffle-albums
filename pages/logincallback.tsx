@@ -37,12 +37,13 @@ const LoginCallback: NextPage = () => {
 
         const data = await res.json();
 
-        if (data.access_token && data.expires_in) {
+        if (data.access_token && data.expires_in && data.refresh_token) {
           localStorage.setItem("access_token", data.access_token);
           localStorage.setItem(
             "access_token_expiry",
             (Date.now() + parseInt(data.expires_in, 10) * 1000).toString()
           );
+          localStorage.setItem("refresh_token", data.refresh_token);
         }
 
         await router.push("/");
