@@ -8,6 +8,8 @@ import AlbumArt from "../components/AlbumArt";
 import Button from "../components/Button";
 import Suspense from "../components/Suspense";
 import fetcher from "../utils/fetcher";
+import { Transition, TransitionGroup } from "react-transition-group";
+import tw from "twin.macro";
 
 const useAlbumsCount = () => {
   const { data } = useSWR<{ total: number }>("/me/albums?limit=1", fetcher, {
@@ -36,9 +38,35 @@ const AlbumShuffler = () => {
     setIndex((index) => index + 1);
   }, []);
 
+  const offset = getOffset(shuffledOffsets, index);
+
   return shuffledOffsets.length ? (
     <>
-      <Album offset={getOffset(shuffledOffsets, index)} />
+      <div tw="relative">
+        <TransitionGroup>
+          <Transition key={offset} timeout={{ exit: 200 }}>
+            {(state) => (
+              <div
+                css={[
+                  tw`transition-transform`,
+                  state === "exiting" &&
+                    tw`absolute top-0 w-full transition duration-200 ease-in-quad`,
+                ]}
+                style={{
+                  transform:
+                    state === "exiting"
+                      ? `translateY(-200%) translateX(${
+                          (offset % 20) - 10
+                        }%) rotate(${(offset % 20) - 10}deg)`
+                      : undefined,
+                }}
+              >
+                <Album offset={offset} hidden={state === "exiting"} />
+              </div>
+            )}
+          </Transition>
+        </TransitionGroup>
+      </div>
       <div tw="flex justify-center mb-20">
         <Button onClick={handleShuffle}>Shuffle</Button>
       </div>
@@ -48,7 +76,7 @@ const AlbumShuffler = () => {
             <Album
               key={rangeIndex}
               offset={getOffset(shuffledOffsets, index + rangeIndex + 1)}
-              disableFocus
+              hidden
             />
           ))}
         </Suspense>
@@ -78,13 +106,7 @@ const useAlbum = (offset: number) => {
   return { album: data?.items[0].album! };
 };
 
-const Album = ({
-  offset,
-  disableFocus,
-}: {
-  offset: number;
-  disableFocus?: boolean;
-}) => {
+const Album = ({ offset, hidden }: { offset: number; hidden?: boolean }) => {
   const { album } = useAlbum(offset);
   const image = album.images[0];
 
@@ -94,18 +116,22 @@ const Album = ({
         href={album.uri}
         src={image.url}
         alt={album.name}
-        disableFocus={disableFocus}
+        disableFocus={hidden}
       />
-      <p tw="mb-2 text-2xl font-bold">
-        <a href={album.uri} tabIndex={disableFocus ? -1 : undefined}>
-          {album.name}
-        </a>
-      </p>
-      <p tw="text-lg text-gray-400 mb-11">
-        <a href={album.artists[0].uri} tabIndex={disableFocus ? -1 : undefined}>
-          {album.artists[0].name}
-        </a>
-      </p>
+      {hidden ? null : (
+        <>
+          <p tw="mb-2 text-2xl font-bold">
+            <a href={album.uri} tabIndex={hidden ? -1 : undefined}>
+              {album.name}
+            </a>
+          </p>
+          <p tw="text-lg text-gray-400 mb-11">
+            <a href={album.artists[0].uri} tabIndex={hidden ? -1 : undefined}>
+              {album.artists[0].name}
+            </a>
+          </p>
+        </>
+      )}
     </div>
   );
 };

@@ -31,7 +31,7 @@ class CustomDocument extends Document<CustomDocumentProps> {
             dangerouslySetInnerHTML={{ __html: this.props.css }}
           />
         </Head>
-        <body tw="min-h-screen px-8 pt-5 text-white bg-background">
+        <body tw="min-h-screen px-8 pt-5 overflow-x-hidden text-white bg-background">
           <Main />
           <NextScript />
         </body>

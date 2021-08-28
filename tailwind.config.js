@@ -21,6 +21,10 @@ module.exports = {
       scale: {
         104: "1.04",
       },
+      transitionTimingFunction: {
+        "in-quad": "cubic-bezier(0.550, 0.085, 0.680, 0.530)",
+        "in-cubic": "cubic-bezier(0.550, 0.055, 0.675, 0.190)",
+      },
     },
   },
   variants: {
