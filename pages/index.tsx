@@ -1,14 +1,13 @@
 import { range, shuffle } from "lodash-es";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
-import useSWR from "swr";
-import Button from "../components/Button";
-import fetcher from "../utils/fetcher";
-import Suspense from "../components/Suspense";
 import { ErrorBoundary } from "react-error-boundary";
+import useSWR from "swr";
 import AlbumArt from "../components/AlbumArt";
+import Button from "../components/Button";
+import Suspense from "../components/Suspense";
+import fetcher from "../utils/fetcher";
 
 const useAlbumsCount = () => {
   const { data } = useSWR<{ total: number }>("/me/albums?limit=1", fetcher, {
@@ -39,17 +38,16 @@ const AlbumShuffler = () => {
 
   return shuffledOffsets.length ? (
     <>
-      <Album
-        offset={getOffset(shuffledOffsets, index)}
-        onShuffle={handleShuffle}
-      />
+      <Album offset={getOffset(shuffledOffsets, index)} />
+      <div tw="flex justify-center mb-20">
+        <Button onClick={handleShuffle}>Shuffle</Button>
+      </div>
       <div tw="sr-only">
         <Suspense fallback={<></>}>
           {range(4).map((rangeIndex) => (
             <Album
               key={rangeIndex}
               offset={getOffset(shuffledOffsets, index + rangeIndex + 1)}
-              onShuffle={handleShuffle}
               disableFocus
             />
           ))}
@@ -82,11 +80,9 @@ const useAlbum = (offset: number) => {
 
 const Album = ({
   offset,
-  onShuffle: shuffle,
   disableFocus,
 }: {
   offset: number;
-  onShuffle: () => void;
   disableFocus?: boolean;
 }) => {
   const { album } = useAlbum(offset);
@@ -110,11 +106,6 @@ const Album = ({
           {album.artists[0].name}
         </a>
       </p>
-      <div tw="flex justify-center mb-20">
-        <Button onClick={shuffle} tabIndex={disableFocus ? -1 : undefined}>
-          Shuffle
-        </Button>
-      </div>
     </div>
   );
 };
