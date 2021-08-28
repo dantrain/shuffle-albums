@@ -2,15 +2,18 @@ import { range, shuffle } from "lodash-es";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import Button from "../components/Button";
 import fetcher from "../utils/fetcher";
+import Suspense from "../components/Suspense";
+import { ErrorBoundary } from "react-error-boundary";
 
 const useAlbumsCount = () => {
   const { data, error } = useSWR<{ total: number }>(
     "/me/albums?limit=1",
-    fetcher
+    fetcher,
+    { suspense: true }
   );
 
   return {
@@ -24,7 +27,7 @@ const getOffset = (shuffledOffsets: number[], index: number) =>
   shuffledOffsets[index % shuffledOffsets.length];
 
 const AlbumShuffler = () => {
-  const { total, isLoading, isError } = useAlbumsCount();
+  const { total } = useAlbumsCount();
   const [shuffledOffsets, setShuffledOffsets] = useState<number[]>([]);
   const [index, setIndex] = useState(0);
 
@@ -39,9 +42,6 @@ const AlbumShuffler = () => {
     setIndex((index) => index + 1);
   }, []);
 
-  if (isError) return <p>Failed to load</p>;
-  if (isLoading || !shuffledOffsets.length) return null;
-
   return (
     <>
       <Album
@@ -49,20 +49,22 @@ const AlbumShuffler = () => {
         onShuffle={handleShuffle}
       />
       <div tw="sr-only">
-        {range(4).map((rangeIndex) => (
-          <Album
-            key={rangeIndex}
-            offset={getOffset(shuffledOffsets, index + rangeIndex + 1)}
-            onShuffle={handleShuffle}
-          />
-        ))}
+        <Suspense fallback={<></>}>
+          {range(4).map((rangeIndex) => (
+            <Album
+              key={rangeIndex}
+              offset={getOffset(shuffledOffsets, index + rangeIndex + 1)}
+              onShuffle={handleShuffle}
+            />
+          ))}
+        </Suspense>
       </div>
     </>
   );
 };
 
 const useAlbum = (offset: number) => {
-  const { data, error } = useSWR<{
+  const { data } = useSWR<{
     items: {
       album: {
         id: string;
@@ -73,16 +75,13 @@ const useAlbum = (offset: number) => {
       };
     }[];
   }>(`/me/albums?limit=1&offset=${offset}`, fetcher, {
+    suspense: true,
     dedupingInterval: 3600000,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
 
-  return {
-    album: data?.items[0].album!,
-    isLoading: !error && !data,
-    isError: error,
-  };
+  return { album: data?.items[0].album! };
 };
 
 const Album = ({
@@ -92,11 +91,7 @@ const Album = ({
   offset: number;
   onShuffle: () => void;
 }) => {
-  const { album, isLoading, isError } = useAlbum(offset);
-
-  if (isError) return <p>Failed to load</p>;
-  if (isLoading) return null;
-
+  const { album } = useAlbum(offset);
   const image = album.images[0];
 
   return (
@@ -138,7 +133,13 @@ const Home: NextPage = () => {
       </Head>
 
       <main tw="mt-20">
-        <AlbumShuffler />
+        <ErrorBoundary
+          fallbackRender={({ error }) => <pre>{error.message}</pre>}
+        >
+          <Suspense fallback={<></>}>
+            <AlbumShuffler />
+          </Suspense>
+        </ErrorBoundary>
       </main>
     </div>
   );
