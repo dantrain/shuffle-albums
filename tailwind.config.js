@@ -23,7 +23,7 @@ module.exports = {
       },
       transitionTimingFunction: {
         "in-quad": "cubic-bezier(0.550, 0.085, 0.680, 0.530)",
-        "in-cubic": "cubic-bezier(0.550, 0.055, 0.675, 0.190)",
+        "out-cubic": "cubic-bezier(0.215, 0.610, 0.355, 1.000)",
       },
     },
   },

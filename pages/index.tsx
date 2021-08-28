@@ -9,7 +9,7 @@ import Button from "../components/Button";
 import Suspense from "../components/Suspense";
 import fetcher from "../utils/fetcher";
 import { Transition, TransitionGroup } from "react-transition-group";
-import tw from "twin.macro";
+import tw, { css } from "twin.macro";
 
 const useAlbumsCount = () => {
   const { data } = useSWR<{ total: number }>("/me/albums?limit=1", fetcher, {
@@ -45,25 +45,7 @@ const AlbumShuffler = () => {
       <div tw="relative">
         <TransitionGroup>
           <Transition key={offset} timeout={{ exit: 200 }}>
-            {(state) => (
-              <div
-                css={[
-                  tw`transition-transform`,
-                  state === "exiting" &&
-                    tw`absolute top-0 w-full transition duration-200 ease-in-quad`,
-                ]}
-                style={{
-                  transform:
-                    state === "exiting"
-                      ? `translateY(-200%) translateX(${
-                          (offset % 20) - 10
-                        }%) rotate(${(offset % 20) - 10}deg)`
-                      : undefined,
-                }}
-              >
-                <Album offset={offset} hidden={state === "exiting"} />
-              </div>
-            )}
+            {(state) => <Album offset={offset} state={state} />}
           </Transition>
         </TransitionGroup>
       </div>
@@ -106,19 +88,42 @@ const useAlbum = (offset: number) => {
   return { album: data?.items[0].album! };
 };
 
-const Album = ({ offset, hidden }: { offset: number; hidden?: boolean }) => {
+const Album = ({
+  offset,
+  hidden,
+  state,
+}: {
+  offset: number;
+  hidden?: boolean;
+  state?: string;
+}) => {
   const { album } = useAlbum(offset);
   const image = album.images[0];
 
   return (
-    <div tw="text-center">
-      <AlbumArt
-        href={album.uri}
-        src={image.url}
-        alt={album.name}
-        disableFocus={hidden}
-      />
-      {hidden ? null : (
+    <>
+      <div
+        css={[
+          tw`transition duration-200`,
+          state === "exiting" && [
+            tw`absolute top-0 w-full opacity-0 ease-in-quad`,
+            css`
+              transform: translateY(-200%) translateX(${(offset % 20) - 10}%)
+                rotate(${(offset % 20) - 10}deg);
+            `,
+          ],
+          state === "entering" &&
+            tw`transform scale-95 ease-out-cubic opacity-30`,
+        ]}
+      >
+        <AlbumArt
+          href={album.uri}
+          src={image.url}
+          alt={album.name}
+          disableFocus={hidden}
+        />
+      </div>
+      {hidden || state === "exiting" ? null : (
         <>
           <p tw="mb-2 text-2xl font-bold">
             <a href={album.uri} tabIndex={hidden ? -1 : undefined}>
@@ -132,7 +137,7 @@ const Album = ({ offset, hidden }: { offset: number; hidden?: boolean }) => {
           </p>
         </>
       )}
-    </div>
+    </>
   );
 };
 
@@ -145,7 +150,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main tw="mt-20">
+      <main tw="mt-20 text-center">
         <ErrorBoundary
           fallbackRender={({ error }) => <pre>{error.message}</pre>}
         >
