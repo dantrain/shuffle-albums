@@ -32,11 +32,12 @@ const AlbumShuffler = () => {
   useEffect(() => {
     if (total) {
       setShuffledOffsets(shuffle(range(total)));
+      setIndex(0);
     }
   }, [total]);
 
   const handleShuffle = useCallback(() => {
-    setIndex((offset) => offset + 1);
+    setIndex((index) => index + 1);
   }, []);
 
   if (isError) return <p>Failed to load</p>;
@@ -72,7 +73,11 @@ const useAlbum = (offset: number) => {
         images: { url: string; width: number; height: number }[];
       };
     }[];
-  }>(`/me/albums?limit=1&offset=${offset}`, fetcher);
+  }>(`/me/albums?limit=1&offset=${offset}`, fetcher, {
+    dedupingInterval: 3600000,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   return {
     album: data?.items[0].album!,
@@ -98,7 +103,7 @@ const Album = ({
   return (
     <div tw="text-center">
       <div
-        tw="mx-auto mb-8 overflow-hidden rounded-sm  shadow-3xl"
+        tw="mx-auto mb-8 overflow-hidden bg-black rounded-sm shadow-3xl"
         style={{ width: 640, height: 640 }}
       >
         <a tw="relative block" href={album.uri}>
