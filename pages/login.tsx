@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import "twin.macro";
 import Button from "../components/Button";
 import { generateRandomString, pkceChallengeFromVerifier } from "../utils/auth";
 

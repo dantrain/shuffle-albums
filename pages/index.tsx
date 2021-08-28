@@ -4,7 +4,6 @@ import Head from "next/head";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
-import "twin.macro";
 import Button from "../components/Button";
 import fetcher from "../utils/fetcher";
 

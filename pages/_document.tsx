@@ -9,7 +9,6 @@ import Document, {
   Main,
   NextScript,
 } from "next/document";
-import "twin.macro";
 
 type CustomDocumentProps = DocumentInitialProps &
   RenderPageResult &

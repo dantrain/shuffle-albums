@@ -1,5 +1,4 @@
 import { ComponentPropsWithoutRef } from "react";
-import "twin.macro";
 
 const Button = (props: ComponentPropsWithoutRef<"button">) => (
   <button
