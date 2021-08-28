@@ -15,6 +15,12 @@ module.exports = {
       letterSpacing: {
         widest: "2px",
       },
+      ringOffsetWidth: {
+        3: "3px",
+      },
+      scale: {
+        104: "1.04",
+      },
     },
   },
   variants: {
