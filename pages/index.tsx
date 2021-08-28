@@ -50,6 +50,7 @@ const AlbumShuffler = () => {
               key={rangeIndex}
               offset={getOffset(shuffledOffsets, index + rangeIndex + 1)}
               onShuffle={handleShuffle}
+              disableFocus
             />
           ))}
         </Suspense>
@@ -82,24 +83,37 @@ const useAlbum = (offset: number) => {
 const Album = ({
   offset,
   onShuffle: shuffle,
+  disableFocus,
 }: {
   offset: number;
   onShuffle: () => void;
+  disableFocus?: boolean;
 }) => {
   const { album } = useAlbum(offset);
   const image = album.images[0];
 
   return (
     <div tw="text-center">
-      <AlbumArt href={album.uri} src={image.url} alt={album.name} />
+      <AlbumArt
+        href={album.uri}
+        src={image.url}
+        alt={album.name}
+        disableFocus={disableFocus}
+      />
       <p tw="mb-2 text-2xl font-bold">
-        <a href={album.uri}>{album.name}</a>
+        <a href={album.uri} tabIndex={disableFocus ? -1 : undefined}>
+          {album.name}
+        </a>
       </p>
       <p tw="text-lg text-gray-400 mb-11">
-        <a href={album.artists[0].uri}>{album.artists[0].name}</a>
+        <a href={album.artists[0].uri} tabIndex={disableFocus ? -1 : undefined}>
+          {album.artists[0].name}
+        </a>
       </p>
       <div tw="flex justify-center mb-20">
-        <Button onClick={shuffle}>Shuffle</Button>
+        <Button onClick={shuffle} tabIndex={disableFocus ? -1 : undefined}>
+          Shuffle
+        </Button>
       </div>
     </div>
   );
