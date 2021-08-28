@@ -8,19 +8,14 @@ import Button from "../components/Button";
 import fetcher from "../utils/fetcher";
 import Suspense from "../components/Suspense";
 import { ErrorBoundary } from "react-error-boundary";
+import AlbumArt from "../components/AlbumArt";
 
 const useAlbumsCount = () => {
-  const { data, error } = useSWR<{ total: number }>(
-    "/me/albums?limit=1",
-    fetcher,
-    { suspense: true }
-  );
+  const { data } = useSWR<{ total: number }>("/me/albums?limit=1", fetcher, {
+    suspense: true,
+  });
 
-  return {
-    total: data?.total,
-    isLoading: !error && !data,
-    isError: error,
-  };
+  return { total: data?.total };
 };
 
 const getOffset = (shuffledOffsets: number[], index: number) =>
@@ -42,7 +37,7 @@ const AlbumShuffler = () => {
     setIndex((index) => index + 1);
   }, []);
 
-  return (
+  return shuffledOffsets.length ? (
     <>
       <Album
         offset={getOffset(shuffledOffsets, index)}
@@ -60,7 +55,7 @@ const AlbumShuffler = () => {
         </Suspense>
       </div>
     </>
-  );
+  ) : null;
 };
 
 const useAlbum = (offset: number) => {
@@ -96,20 +91,7 @@ const Album = ({
 
   return (
     <div tw="text-center">
-      <div
-        tw="mx-auto mb-8 overflow-hidden bg-black rounded-sm shadow-3xl"
-        style={{ width: 640, height: 640 }}
-      >
-        <a tw="relative block" href={album.uri}>
-          <Image
-            src={image.url}
-            alt={album.name}
-            width={image.width}
-            height={image.height}
-          />
-          <div tw="absolute inset-0 shadow-inset" />
-        </a>
-      </div>
+      <AlbumArt href={album.uri} src={image.url} alt={album.name} />
       <p tw="mb-2 text-2xl font-bold">
         <a href={album.uri}>{album.name}</a>
       </p>
