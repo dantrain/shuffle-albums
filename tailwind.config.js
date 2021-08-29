@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: "Helvetica, Arial, sans-serif",
+        sans: "Helvetica Neue, Helvetica, Arial, sans-serif",
       },
       colors: {
         "spotify-green": "#1eb854",

@@ -5,7 +5,7 @@ import Head from "next/head";
 const App = ({ Component, pageProps }: AppProps) => (
   <>
     <Head>
-      <title>Spotify Albums</title>
+      <title>Shuffle Albums</title>
     </Head>
     <GlobalStyles />
     <Component {...pageProps} />

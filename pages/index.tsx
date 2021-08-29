@@ -1,15 +1,14 @@
 import { range, shuffle } from "lodash-es";
 import type { NextPage } from "next";
-import Head from "next/head";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { Transition, TransitionGroup } from "react-transition-group";
 import useSWR from "swr";
+import tw, { css } from "twin.macro";
 import AlbumArt from "../components/AlbumArt";
 import Button from "../components/Button";
 import Suspense from "../components/Suspense";
 import fetcher from "../utils/fetcher";
-import { Transition, TransitionGroup } from "react-transition-group";
-import tw, { css } from "twin.macro";
 
 const useAlbumsCount = () => {
   const { data } = useSWR<{ total: number }>("/me/albums?limit=1", fetcher, {
@@ -131,9 +130,16 @@ const Album = ({
             </a>
           </p>
           <p tw="text-lg text-gray-400 mb-11">
-            <a href={album.artists[0].uri} tabIndex={hidden ? -1 : undefined}>
-              {album.artists[0].name}
-            </a>
+            {album.artists
+              .map(({ name, uri }) => (
+                <a key={uri} href={uri} tabIndex={hidden ? -1 : undefined}>
+                  {name}
+                </a>
+              ))
+              .reduce(
+                (acc, curr) => (acc.length ? [...acc, ", ", curr] : [curr]),
+                [] as ReactNode[]
+              )}
           </p>
         </>
       )}
