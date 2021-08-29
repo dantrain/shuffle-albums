@@ -22,8 +22,11 @@ const Login: NextPage = () => {
   };
 
   return (
-    <div tw="flex justify-center mt-20">
-      <Button onClick={handleLogin}>Login with Spotify</Button>
+    <div tw="mt-48 text-center">
+      <h1 tw="font-black tracking-tight mb-28 text-8xl">Shuffle Albums</h1>
+      <div tw="flex justify-center">
+        <Button onClick={handleLogin}>Login with Spotify</Button>
+      </div>
     </div>
   );
 };

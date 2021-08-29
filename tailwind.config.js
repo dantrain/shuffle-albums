@@ -3,8 +3,12 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      fontFamily: {
+        sans: "Helvetica, Arial, sans-serif",
+      },
       colors: {
         "spotify-green": "#1eb854",
+        "spotify-green-brighter": "#1cd760",
         background: "#181818",
       },
       boxShadow: {
