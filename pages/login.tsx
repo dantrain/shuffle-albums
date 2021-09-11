@@ -22,12 +22,14 @@ const Login: NextPage = () => {
   };
 
   return (
-    <div tw="mt-48 text-center">
-      <h1 tw="font-black tracking-tight mb-28 text-8xl">Shuffle Albums</h1>
+    <main tw="mt-16 text-center sm:mt-48">
+      <h1 tw="font-black tracking-tight text-7xl mb-28 sm:text-8xl">
+        Shuffle Albums
+      </h1>
       <div tw="flex justify-center">
         <Button onClick={handleLogin}>Login with Spotify</Button>
       </div>
-    </div>
+    </main>
   );
 };
 
