@@ -149,7 +149,7 @@ const Album = ({
 
 const Home: NextPage = () => {
   return (
-    <main tw="mt-20">
+    <main tw="relative sm:mt-20">
       <ErrorBoundary fallbackRender={({ error }) => <pre>{error.message}</pre>}>
         <Suspense fallback={<></>}>
           <AlbumShuffler />
