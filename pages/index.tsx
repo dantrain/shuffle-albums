@@ -41,14 +41,14 @@ const AlbumShuffler = () => {
 
   return shuffledOffsets.length ? (
     <>
-      <div tw="relative mx-auto" css="max-width: 640px">
+      <div tw="relative mx-auto text-center" css="max-width: 640px">
         <TransitionGroup>
           <Transition key={offset} timeout={{ exit: 200 }}>
             {(state) => <Album offset={offset} state={state} />}
           </Transition>
         </TransitionGroup>
       </div>
-      <div tw="flex justify-center mb-20">
+      <div tw="flex justify-center">
         <Button onClick={handleShuffle}>Shuffle</Button>
       </div>
       <div tw="sr-only">
@@ -106,8 +106,10 @@ const Album = ({
           tw`mb-8 transition duration-200`,
           state === "exiting" && [
             tw`absolute top-0 w-full opacity-0 ease-in-quad`,
-            `transform: translateY(-200%) translateX(${(offset % 20) - 10}%);
-             rotate(${(offset % 20) - 10}deg);`,
+            css`
+              transform: translateY(-200%) translateX(${(offset % 20) - 10}%);
+              rotate(${(offset % 20) - 10}deg);
+            `,
           ],
           state === "entering" &&
             tw`transform scale-95 ease-out-cubic opacity-30`,
@@ -122,12 +124,12 @@ const Album = ({
       </div>
       {hidden || state === "exiting" ? null : (
         <>
-          <p tw="mb-2 text-2xl font-bold">
+          <p tw="mb-2 text-2xl font-bold line-clamp-1">
             <a href={album.uri} tabIndex={hidden ? -1 : undefined}>
               {album.name}
             </a>
           </p>
-          <p tw="text-lg text-gray-400 mb-11">
+          <p tw="text-lg text-gray-400 mb-11 line-clamp-1">
             {album.artists
               .map(({ name, uri }) => (
                 <a key={uri} href={uri} tabIndex={hidden ? -1 : undefined}>
@@ -147,7 +149,7 @@ const Album = ({
 
 const Home: NextPage = () => {
   return (
-    <main tw="mt-20 text-center">
+    <main tw="mt-20">
       <ErrorBoundary fallbackRender={({ error }) => <pre>{error.message}</pre>}>
         <Suspense fallback={<></>}>
           <AlbumShuffler />
