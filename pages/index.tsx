@@ -2,6 +2,7 @@ import { range, shuffle } from "lodash-es";
 import type { NextPage } from "next";
 import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { useSwipeable } from "react-swipeable";
 import { Transition, TransitionGroup } from "react-transition-group";
 import useSWR from "swr";
 import tw, { css } from "twin.macro";
@@ -37,11 +38,17 @@ const AlbumShuffler = () => {
     setIndex((index) => index + 1);
   }, []);
 
+  const swipeHandlers = useSwipeable({ onSwipedUp: handleShuffle });
+
   const offset = getOffset(shuffledOffsets, index);
 
   return shuffledOffsets.length ? (
     <>
-      <div tw="relative mx-auto text-center" css="max-width: 640px">
+      <div
+        tw="relative mx-auto text-center"
+        css="max-width: 640px"
+        {...swipeHandlers}
+      >
         <TransitionGroup>
           <Transition key={offset} timeout={{ exit: 200 }}>
             {(state) => <Album offset={offset} state={state} />}
@@ -149,7 +156,7 @@ const Album = ({
 
 const Home: NextPage = () => {
   return (
-    <main tw="relative sm:mt-20">
+    <main tw="relative sm:my-20">
       <ErrorBoundary fallbackRender={({ error }) => <pre>{error.message}</pre>}>
         <Suspense fallback={<></>}>
           <AlbumShuffler />
