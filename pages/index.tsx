@@ -41,7 +41,7 @@ const AlbumShuffler = () => {
 
   return shuffledOffsets.length ? (
     <>
-      <div tw="relative">
+      <div tw="relative mx-auto" css="max-width: 640px">
         <TransitionGroup>
           <Transition key={offset} timeout={{ exit: 200 }}>
             {(state) => <Album offset={offset} state={state} />}
@@ -103,13 +103,11 @@ const Album = ({
     <>
       <div
         css={[
-          tw`transition duration-200`,
+          tw`mb-8 transition duration-200`,
           state === "exiting" && [
             tw`absolute top-0 w-full opacity-0 ease-in-quad`,
-            css`
-              transform: translateY(-200%) translateX(${(offset % 20) - 10}%)
-                rotate(${(offset % 20) - 10}deg);
-            `,
+            `transform: translateY(-200%) translateX(${(offset % 20) - 10}%);
+             rotate(${(offset % 20) - 10}deg);`,
           ],
           state === "entering" &&
             tw`transform scale-95 ease-out-cubic opacity-30`,
