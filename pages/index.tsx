@@ -46,7 +46,7 @@ const AlbumShuffler = () => {
     <>
       <div
         tw="relative mx-auto text-center"
-        css="max-width: 640px"
+        css="max-width: clamp(25rem, calc(100vh - 25rem), 640px)"
         {...swipeHandlers}
       >
         <TransitionGroup>
