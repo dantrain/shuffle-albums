@@ -118,8 +118,7 @@ const Album = ({
               rotate(${(offset % 20) - 10}deg);
             `,
           ],
-          state === "entering" &&
-            tw`transform scale-95 ease-out-cubic opacity-30`,
+          state === "entering" && tw`scale-95 ease-out-cubic opacity-30`,
         ]}
       >
         <AlbumArt

@@ -1,6 +1,5 @@
 module.exports = {
-  purge: [],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./components/**/*.{ts,tsx}", "./pages/**/*.{ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {
@@ -30,9 +29,6 @@ module.exports = {
         "out-cubic": "cubic-bezier(0.215, 0.610, 0.355, 1.000)",
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [require("@tailwindcss/line-clamp")],
 };
