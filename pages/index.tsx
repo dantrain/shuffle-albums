@@ -1,6 +1,12 @@
 import { range, shuffle } from "lodash-es";
 import type { NextPage } from "next";
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
+import React, {
+  ReactNode,
+  Suspense,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSwipeable } from "react-swipeable";
 import { Transition, TransitionGroup } from "react-transition-group";
@@ -8,7 +14,7 @@ import useSWR from "swr";
 import tw, { css } from "twin.macro";
 import AlbumArt from "../components/AlbumArt";
 import Button from "../components/Button";
-import Suspense from "../components/Suspense";
+import ClientOnlySuspense from "../components/ClientOnlySuspense";
 import fetcher from "../utils/fetcher";
 
 const useAlbumsCount = () => {
@@ -157,9 +163,9 @@ const Home: NextPage = () => {
   return (
     <main tw="relative sm:my-20">
       <ErrorBoundary fallbackRender={({ error }) => <pre>{error.message}</pre>}>
-        <Suspense fallback={<></>}>
+        <ClientOnlySuspense fallback={<></>}>
           <AlbumShuffler />
-        </Suspense>
+        </ClientOnlySuspense>
       </ErrorBoundary>
     </main>
   );
