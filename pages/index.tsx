@@ -17,6 +17,7 @@ import tw, { css } from "twin.macro";
 import AlbumArt from "../components/AlbumArt";
 import Button from "../components/Button";
 import ClientOnlySuspense from "../components/ClientOnlySuspense";
+import SettingsMenu from "../components/SettingsMenu";
 import fetcher from "../utils/fetcher";
 
 const useAlbumsCount = () => {
@@ -99,6 +100,9 @@ const useAlbum = (offset: number) => {
         id: string;
         name: string;
         uri: string;
+        external_urls: {
+          spotify: string;
+        };
         artists: { name: string; uri: string }[];
         images: { url: string; width: number; height: number }[];
       };
@@ -189,6 +193,7 @@ const Home: NextPage = () => {
         <ClientOnlySuspense fallback={<></>}>
           <AlbumShuffler />
         </ClientOnlySuspense>
+        <SettingsMenu />
       </ErrorBoundary>
     </main>
   );

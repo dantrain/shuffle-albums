@@ -16,6 +16,8 @@ const AlbumArt = ({ href, alt, src, disableFocus, ...rest }: AlbumArtProps) => {
       tw="relative block bg-black rounded-sm shadow-3xl"
       css="font-size: 0"
       href={href}
+      // target="_blank"
+      rel="noreferrer"
       tabIndex={disableFocus ? -1 : undefined}
     >
       <Image

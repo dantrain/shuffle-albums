@@ -13,6 +13,8 @@
     "@emotion/react": "^11.10.5",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.5",
+    "@radix-ui/react-dropdown-menu": "^2.0.1",
+    "@radix-ui/react-icons": "^1.1.1",
     "@tailwindcss/line-clamp": "^0.4.2",
     "isomorphic-unfetch": "^3.1.0",
     "lodash-es": "^4.17.21",

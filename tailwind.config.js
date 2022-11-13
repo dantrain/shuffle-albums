@@ -9,6 +9,7 @@ module.exports = {
         "spotify-green": "#1eb854",
         "spotify-green-brighter": "#1cd760",
         background: "#181818",
+        "menu-background": "#282828",
       },
       boxShadow: {
         inset:
