@@ -14,6 +14,7 @@ import { useSwipeable } from "react-swipeable";
 import { Transition, TransitionGroup } from "react-transition-group";
 import useSWR from "swr";
 import tw, { css } from "twin.macro";
+import { useReadLocalStorage } from "usehooks-ts";
 import AlbumArt from "../components/AlbumArt";
 import Button from "../components/Button";
 import ClientOnlySuspense from "../components/ClientOnlySuspense";
@@ -128,6 +129,7 @@ const Album = ({
 }) => {
   const { album } = useAlbum(offset);
   const image = album.images[0];
+  const useWebPlayer = useReadLocalStorage("useWebPlayer");
 
   return (
     <>
@@ -145,7 +147,7 @@ const Album = ({
         ]}
       >
         <AlbumArt
-          href={album.uri}
+          href={useWebPlayer ? album.external_urls.spotify : album.uri}
           src={image.url}
           alt={album.name}
           disableFocus={hidden}

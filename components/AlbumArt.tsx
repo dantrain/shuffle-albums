@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ComponentPropsWithoutRef } from "react";
 import { useImage } from "react-image";
+import { useReadLocalStorage } from "usehooks-ts";
 
 type AlbumArtProps = {
   href: string;
@@ -10,13 +11,14 @@ type AlbumArtProps = {
 
 const AlbumArt = ({ href, alt, src, disableFocus, ...rest }: AlbumArtProps) => {
   const { src: loadedSrc } = useImage({ srcList: src });
+  const useWebPlayer = useReadLocalStorage("useWebPlayer");
 
   return (
     <a
       tw="relative block bg-black rounded-sm shadow-3xl"
       css="font-size: 0"
       href={href}
-      // target="_blank"
+      target={useWebPlayer ? "_blank" : undefined}
       rel="noreferrer"
       tabIndex={disableFocus ? -1 : undefined}
     >
