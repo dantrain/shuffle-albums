@@ -9,6 +9,7 @@ import React, {
   useState,
 } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import { GlobalHotKeys } from "react-hotkeys";
 import { useSwipeable } from "react-swipeable";
 import { Transition, TransitionGroup } from "react-transition-group";
 import useSWR from "swr";
@@ -41,16 +42,27 @@ const AlbumShuffler = () => {
     }
   }, [total]);
 
-  const handleShuffle = useCallback(() => {
+  const handleForward = useCallback(() => {
     setIndex((index) => index + 1);
   }, []);
 
-  const swipeHandlers = useSwipeable({ onSwipedUp: handleShuffle });
+  const handleBackward = useCallback(() => {
+    setIndex((index) => Math.max(0, index - 1));
+  }, []);
+
+  const swipeHandlers = useSwipeable({
+    onSwipedUp: handleForward,
+    onSwipedDown: handleBackward,
+  });
 
   const offset = getOffset(shuffledOffsets, index);
 
   return shuffledOffsets.length ? (
     <>
+      <GlobalHotKeys
+        keyMap={{ FORWARD: "right", BACKWARD: "left" }}
+        handlers={{ FORWARD: handleForward, BACKWARD: handleBackward }}
+      />
       <div
         tw="relative mx-auto text-center"
         css="max-width: clamp(25rem, calc(100vh - 25rem), 640px)"
@@ -63,7 +75,7 @@ const AlbumShuffler = () => {
         </TransitionGroup>
       </div>
       <div tw="flex justify-center">
-        <Button onClick={handleShuffle}>Shuffle</Button>
+        <Button onClick={handleForward}>Shuffle</Button>
       </div>
       <div tw="sr-only">
         <Suspense fallback={<></>}>
