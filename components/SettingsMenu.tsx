@@ -1,8 +1,14 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { CheckIcon, GearIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/router";
-import { useCallback, useState } from "react";
+import { ReactNode, useCallback } from "react";
 import { useLocalStorage } from "usehooks-ts";
+
+const MenuItem = ({ children }: { children: ReactNode }) => (
+  <div tw="group-hover:bg-[rgba(255, 255, 255, 0.1)] group-focus-visible:bg-[rgba(255, 255, 255, 0.1)] relative min-w-[200px] p-3 pl-8 rounded-sm">
+    {children}
+  </div>
+);
 
 const SettingsMenu = () => {
   const router = useRouter();
@@ -22,7 +28,7 @@ const SettingsMenu = () => {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button
-          tw="fixed right-2 bottom-2 sm:bottom-auto sm:top-2 p-3 focus:outline-none rounded-full text-gray-300 sm:text-gray-200 hover:text-white"
+          tw="fixed right-2 bottom-2 sm:bottom-auto sm:top-2 block p-3 focus:outline-none rounded-full text-gray-400 sm:text-gray-200 hover:text-white focus-visible:ring focus-visible:ring-white"
           aria-label="Settings"
         >
           <GearIcon />
@@ -34,24 +40,29 @@ const SettingsMenu = () => {
           tw="bg-menu-background text-gray-200 text-sm rounded shadow-xl overflow-hidden cursor-default"
           sideOffset={0}
           collisionPadding={8}
+          onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <DropdownMenu.CheckboxItem
-            tw="relative p-3 pl-8 min-w-[200px] focus:outline-none focus-visible:bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.1)] border-4 rounded-md border-menu-background"
+            className="group"
+            tw="focus:outline-none px-1 pt-1"
             checked={useWebPlayer}
             onCheckedChange={(checked) => {
               setUseWebPlayer(checked === "indeterminate" ? false : checked);
             }}
           >
-            <DropdownMenu.ItemIndicator tw="absolute left-3 top-[14px]">
-              <CheckIcon />
-            </DropdownMenu.ItemIndicator>
-            Use web player
+            <MenuItem>
+              <DropdownMenu.ItemIndicator tw="absolute left-3 top-[14px]">
+                <CheckIcon />
+              </DropdownMenu.ItemIndicator>
+              Use web player
+            </MenuItem>
           </DropdownMenu.CheckboxItem>
           <DropdownMenu.Item
-            tw="p-3 pl-8 min-w-[200px] focus:outline-none focus-visible:bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.1)] border-4 rounded-md border-menu-background"
+            className="group"
+            tw="focus:outline-none px-1 pb-1"
             onClick={handleLogOut}
           >
-            Log out
+            <MenuItem>Log out</MenuItem>
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
