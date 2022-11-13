@@ -31,4 +31,7 @@ module.exports = {
     },
   },
   plugins: [require("@tailwindcss/line-clamp")],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
 };
