@@ -1,5 +1,6 @@
 import { range, shuffle } from "lodash-es";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 import React, {
   ReactNode,
   Suspense,
@@ -120,8 +121,8 @@ const Album = ({
           state === "exiting" && [
             tw`absolute top-0 w-full opacity-0 ease-in-quad`,
             css`
-              transform: translateY(-200%) translateX(${(offset % 20) - 10}%);
-              rotate(${(offset % 20) - 10}deg);
+              transform: translateY(-200%) translateX(${(offset % 20) - 10}%)
+                rotate(${(offset % 20) - 10}deg);
             `,
           ],
           state === "entering" && tw`scale-95 ease-out-cubic opacity-30`,
@@ -159,10 +160,20 @@ const Album = ({
   );
 };
 
+const Error = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push("/login");
+  });
+
+  return null;
+};
+
 const Home: NextPage = () => {
   return (
     <main tw="relative sm:my-20">
-      <ErrorBoundary fallbackRender={({ error }) => <pre>{error.message}</pre>}>
+      <ErrorBoundary FallbackComponent={Error}>
         <ClientOnlySuspense fallback={<></>}>
           <AlbumShuffler />
         </ClientOnlySuspense>
