@@ -31,7 +31,7 @@ const SettingsMenu = () => {
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          tw="bg-menu-background text-gray-200 text-sm rounded shadow-xl overflow-hidden"
+          tw="bg-menu-background text-gray-200 text-sm rounded shadow-xl overflow-hidden cursor-default"
           sideOffset={0}
           collisionPadding={8}
         >
