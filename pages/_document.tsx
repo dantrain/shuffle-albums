@@ -30,6 +30,11 @@ class CustomDocument extends Document<CustomDocumentProps> {
             name="description"
             content="Shuffle your liked albums on Spotify"
           />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+          />
           <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
           <link rel="icon" type="image/png" href="/favicon.png" />
           <style
