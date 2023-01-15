@@ -188,7 +188,7 @@ const Error = () => {
 
 const Home: NextPage = () => {
   return (
-    <main tw="relative sm:my-20">
+    <main tw="relative sm:my-20 p-6">
       <ErrorBoundary FallbackComponent={Error}>
         <ClientOnlySuspense fallback={<></>}>
           <AlbumShuffler />

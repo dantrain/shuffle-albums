@@ -1,5 +1,7 @@
 import type { NextPage } from "next";
+import Link from "next/link";
 import Button from "../components/Button";
+import Spacer from "../components/Spacer";
 import { generateRandomString, pkceChallengeFromVerifier } from "../utils/auth";
 
 const Login: NextPage = () => {
@@ -22,13 +24,18 @@ const Login: NextPage = () => {
   };
 
   return (
-    <main tw="mt-16 text-center sm:mt-48">
+    <main tw="text-center p-6 min-h-screen flex flex-col">
+      <Spacer />
       <h1 tw="font-black tracking-tight text-7xl mb-28 sm:text-8xl">
         Shuffle Albums
       </h1>
       <div tw="flex justify-center">
         <Button onClick={handleLogin}>Login with Spotify</Button>
       </div>
+      <Spacer factor={3} />
+      <Link tw="text-gray-400 hover:text-white hover:underline" href="/privacy">
+        Privacy policy
+      </Link>
     </main>
   );
 };

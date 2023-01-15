@@ -60,6 +60,13 @@ const SettingsMenu = () => {
           <DropdownMenu.Item
             className="group"
             tw="focus:outline-none px-1 pb-1"
+            onClick={() => router.push("/privacy")}
+          >
+            <MenuItem>Privacy policy</MenuItem>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            className="group"
+            tw="focus:outline-none px-1 pb-1"
             onClick={handleLogOut}
           >
             <MenuItem>Log out</MenuItem>
