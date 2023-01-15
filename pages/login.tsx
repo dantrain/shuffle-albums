@@ -24,7 +24,7 @@ const Login: NextPage = () => {
   };
 
   return (
-    <main tw="text-center p-6 min-h-screen flex flex-col">
+    <main tw="text-center p-6 flex flex-col min-h-[80vh] sm:min-h-screen">
       <Spacer />
       <h1 tw="font-black tracking-tight text-7xl mb-28 sm:text-8xl">
         Shuffle Albums
