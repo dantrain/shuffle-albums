@@ -153,12 +153,12 @@ const Album = ({
       </div>
       {hidden || state === "exiting" ? null : (
         <>
-          <p tw="mb-2 text-2xl font-bold line-clamp-1">
+          <p tw="mb-2 text-2xl font-bold line-clamp-1 h-8">
             <a href={album.uri} tabIndex={hidden ? -1 : undefined}>
               {album.name}
             </a>
           </p>
-          <p tw="text-lg text-gray-400 mb-11 line-clamp-1">
+          <p tw="text-lg text-gray-400 mb-11 line-clamp-1 h-7">
             {album.artists
               .map(({ name, uri }) => (
                 <a key={uri} href={uri} tabIndex={hidden ? -1 : undefined}>
