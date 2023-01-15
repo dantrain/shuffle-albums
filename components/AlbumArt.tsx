@@ -22,14 +22,7 @@ const AlbumArt = ({ href, alt, src, disableFocus, ...rest }: AlbumArtProps) => {
       rel="noreferrer"
       tabIndex={disableFocus ? -1 : undefined}
     >
-      <Image
-        tw="aspect-square"
-        src={loadedSrc!}
-        alt={alt}
-        width={640}
-        height={640}
-        {...rest}
-      />
+      <Image src={loadedSrc!} alt={alt} width={640} height={640} {...rest} />
       <div tw="absolute inset-0 shadow-inset" />
     </a>
   );

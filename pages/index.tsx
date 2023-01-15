@@ -133,7 +133,7 @@ const Album = ({
     <>
       <div
         css={[
-          tw`mb-8 transition duration-200`,
+          tw`mb-8 transition duration-200 aspect-square`,
           state === "exiting" && [
             tw`absolute top-0 w-full opacity-0 ease-in-quad`,
             css`
