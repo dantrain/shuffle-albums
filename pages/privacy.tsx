@@ -9,7 +9,7 @@ const Privacy: NextPage = () => {
       <Spacer />
       <div tw="mx-auto max-w-2xl">
         <h1 tw="font-black tracking-tight text-5xl mb-14">Privacy Policy</h1>
-        <p tw="text-lg text-left mb-14">
+        <p tw="sm:text-lg text-left mb-14">
           The data that you authorise this app to access from your Spotify
           account in order to function is not recorded and does not leave your
           device. This app uses no third-party analytics or advertising
