@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/dist/client/router";
 import { useEffect } from "react";
+import logout from "../utils/logout";
 
 const LoginCallback: NextPage = () => {
   const router = useRouter();
@@ -20,36 +21,44 @@ const LoginCallback: NextPage = () => {
       state
     ) {
       if (urlParams.get("state") !== state) {
-        return alert("Invalid state");
+        logout(router);
       }
 
       const fetchAccessToken = async () => {
-        const res = await fetch("https://accounts.spotify.com/api/token", {
-          method: "POST",
-          body: new URLSearchParams({
-            client_id: process.env.NEXT_PUBLIC_CLIENT_ID!,
-            grant_type: "authorization_code",
-            code: urlParams.get("code")!,
-            redirect_uri: `${window.location.origin}/logincallback`,
-            code_verifier: codeVerifier,
-          }),
-        });
+        try {
+          const res = await fetch("https://accounts.spotify.com/api/token", {
+            method: "POST",
+            body: new URLSearchParams({
+              client_id: process.env.NEXT_PUBLIC_CLIENT_ID!,
+              grant_type: "authorization_code",
+              code: urlParams.get("code")!,
+              redirect_uri: `${window.location.origin}/logincallback`,
+              code_verifier: codeVerifier,
+            }),
+          });
 
-        const data = await res.json();
+          const data = await res.json();
 
-        if (data.access_token && data.expires_in && data.refresh_token) {
-          localStorage.setItem("access_token", data.access_token);
-          localStorage.setItem(
-            "access_token_expiry",
-            (Date.now() + parseInt(data.expires_in, 10) * 1000).toString()
-          );
-          localStorage.setItem("refresh_token", data.refresh_token);
+          if (data.access_token && data.expires_in && data.refresh_token) {
+            localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem(
+              "access_token_expiry",
+              (Date.now() + parseInt(data.expires_in, 10) * 1000).toString()
+            );
+            localStorage.setItem("refresh_token", data.refresh_token);
+          } else {
+            throw new Error("Missing data");
+          }
+
+          await router.push("/");
+        } catch (e) {
+          logout(router);
         }
-
-        await router.push("/");
       };
 
       fetchAccessToken();
+    } else if (urlParams.has("error")) {
+      logout(router);
     }
   }, [router]);
 

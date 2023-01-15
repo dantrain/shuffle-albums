@@ -3,6 +3,7 @@ import { CheckIcon, GearIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/router";
 import { ReactNode, useCallback } from "react";
 import { useLocalStorage } from "usehooks-ts";
+import logout from "../utils/logout";
 
 const MenuItem = ({ children }: { children: ReactNode }) => (
   <div tw="group-hover:bg-[rgba(255, 255, 255, 0.1)] group-focus-visible:bg-[rgba(255, 255, 255, 0.1)] relative min-w-[200px] p-3 pl-8 rounded-sm">
@@ -16,13 +17,6 @@ const SettingsMenu = () => {
     "useWebPlayer",
     false
   );
-
-  const handleLogOut = useCallback(() => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("access_token_expiry");
-    localStorage.removeItem("refresh_token");
-    router.push("/login");
-  }, [router]);
 
   return (
     <DropdownMenu.Root>
@@ -67,7 +61,7 @@ const SettingsMenu = () => {
           <DropdownMenu.Item
             className="group"
             tw="focus:outline-none px-1 pb-1"
-            onClick={handleLogOut}
+            onClick={() => logout(router)}
           >
             <MenuItem>Log out</MenuItem>
           </DropdownMenu.Item>
