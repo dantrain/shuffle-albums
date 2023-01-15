@@ -12,7 +12,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { GlobalHotKeys } from "react-hotkeys";
 import { useSwipeable } from "react-swipeable";
 import { Transition, TransitionGroup } from "react-transition-group";
-import useSWR from "swr";
+import useSWR from "swr/immutable";
 import tw, { css } from "twin.macro";
 import { useReadLocalStorage } from "usehooks-ts";
 import AlbumArt from "../components/AlbumArt";
@@ -111,8 +111,6 @@ const useAlbum = (offset: number) => {
   }>(`/me/albums?limit=1&offset=${offset}`, fetcher, {
     suspense: true,
     dedupingInterval: 3600000,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
   });
 
   return { album: data?.items[0].album! };
