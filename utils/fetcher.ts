@@ -1,6 +1,7 @@
 import fetch from "isomorphic-unfetch";
 import memoizeOne from "memoize-one";
 import router from "next/dist/client/router";
+import PubSub from "pubsub-js";
 
 const refreshAccessToken = memoizeOne(async (refreshToken: string) => {
   const res = await fetch("https://accounts.spotify.com/api/token", {
@@ -45,15 +46,21 @@ const fetcher = async <JSON = any>(
     accessToken = await refreshAccessToken(refreshToken);
   }
 
-  const res = await fetch(`https://api.spotify.com/v1${path}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      ...options?.headers,
-    },
-    ...options,
-  });
+  try {
+    PubSub.publish("REQUEST", "REQUEST_START");
 
-  return res.json();
+    const res = await fetch(`https://api.spotify.com/v1${path}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        ...options?.headers,
+      },
+      ...options,
+    });
+
+    return res.json();
+  } finally {
+    PubSub.publish("REQUEST", "REQUEST_END");
+  }
 };
 
 export default fetcher;

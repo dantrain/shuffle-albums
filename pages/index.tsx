@@ -18,6 +18,7 @@ import { useReadLocalStorage } from "usehooks-ts";
 import AlbumArt from "../components/AlbumArt";
 import Button from "../components/Button";
 import ClientOnlySuspense from "../components/ClientOnlySuspense";
+import Progress from "../components/Progress";
 import SettingsMenu from "../components/SettingsMenu";
 import fetcher from "../utils/fetcher";
 
@@ -189,6 +190,7 @@ const Error = () => {
 const Home: NextPage = () => {
   return (
     <main tw="relative p-6 sm:py-24 w-screen">
+      <Progress />
       <ErrorBoundary FallbackComponent={Error}>
         <ClientOnlySuspense fallback={<></>}>
           <AlbumShuffler />
