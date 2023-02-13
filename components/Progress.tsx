@@ -36,7 +36,7 @@ const Progress = () => {
       timeout = setTimeout(() => {
         setIsAnimating(true);
         setMaxProgress(1);
-      }, 400);
+      }, 500);
     } else {
       setIsAnimating(false);
     }
