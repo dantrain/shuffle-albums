@@ -106,7 +106,13 @@ const useAlbum = (offset: number) => {
         external_urls: {
           spotify: string;
         };
-        artists: { name: string; uri: string }[];
+        artists: {
+          name: string;
+          uri: string;
+          external_urls: {
+            spotify: string;
+          };
+        }[];
         images: { url: string; width: number; height: number }[];
       };
     }[];
@@ -130,6 +136,8 @@ const Album = ({
   const { album } = useAlbum(offset);
   const image = album.images[0];
   const useWebPlayer = useReadLocalStorage("useWebPlayer");
+
+  console.log(album);
 
   return (
     <>
@@ -156,15 +164,28 @@ const Album = ({
       {hidden || state === "exiting" ? null : (
         <>
           <p tw="mb-2 text-2xl font-bold line-clamp-1 h-8">
-            <a href={album.uri} tabIndex={hidden ? -1 : undefined}>
+            <a
+              href={useWebPlayer ? album.external_urls.spotify : album.uri}
+              target={useWebPlayer ? "_blank" : undefined}
+              rel="noreferrer"
+              tabIndex={hidden ? -1 : undefined}
+            >
               {album.name}
             </a>
           </p>
           <p tw="text-lg text-gray-400 mb-8 line-clamp-1 h-7">
             {album.artists
-              .map(({ name, uri }) => (
-                <a key={uri} href={uri} tabIndex={hidden ? -1 : undefined}>
-                  {name}
+              .map((artist) => (
+                <a
+                  key={artist.uri}
+                  href={
+                    useWebPlayer ? artist.external_urls.spotify : artist.uri
+                  }
+                  target={useWebPlayer ? "_blank" : undefined}
+                  rel="noreferrer"
+                  tabIndex={hidden ? -1 : undefined}
+                >
+                  {artist.name}
                 </a>
               ))
               .reduce(
