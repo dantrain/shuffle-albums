@@ -18,6 +18,7 @@ import { useReadLocalStorage } from "usehooks-ts";
 import AlbumArt from "../components/AlbumArt";
 import Button from "../components/Button";
 import ClientOnlySuspense from "../components/ClientOnlySuspense";
+import Logo from "../components/Logo";
 import Progress from "../components/Progress";
 import SettingsMenu from "../components/SettingsMenu";
 import fetcher from "../utils/fetcher";
@@ -159,7 +160,7 @@ const Album = ({
               {album.name}
             </a>
           </p>
-          <p tw="text-lg text-gray-400 mb-11 line-clamp-1 h-7">
+          <p tw="text-lg text-gray-400 mb-8 line-clamp-1 h-7">
             {album.artists
               .map(({ name, uri }) => (
                 <a key={uri} href={uri} tabIndex={hidden ? -1 : undefined}>
@@ -192,6 +193,7 @@ const Home: NextPage = () => {
     <main tw="relative p-6 sm:py-24 w-screen">
       <Progress />
       <ErrorBoundary FallbackComponent={Error}>
+        <Logo />
         <ClientOnlySuspense fallback={<></>}>
           <AlbumShuffler />
         </ClientOnlySuspense>
