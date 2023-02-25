@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
-module.exports = {
+const withPWA = require("next-pwa")({
+  dest: "public",
+  disable: process.env.NODE_ENV !== "production",
+});
+
+module.exports = withPWA({
   reactStrictMode: true,
   webpack: (config) => {
     // Unset client-side javascript that only works server-side
@@ -11,4 +16,4 @@ module.exports = {
     domains: ["i.scdn.co"],
     unoptimized: true,
   },
-};
+});

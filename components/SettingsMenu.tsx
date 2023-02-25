@@ -40,9 +40,7 @@ const SettingsMenu = () => {
             className="group"
             tw="focus:outline-none px-1 pt-1"
             checked={useWebPlayer}
-            onCheckedChange={(checked) => {
-              setUseWebPlayer(checked === "indeterminate" ? false : checked);
-            }}
+            onCheckedChange={(checked) => setUseWebPlayer(checked)}
           >
             <MenuItem>
               <DropdownMenu.ItemIndicator tw="absolute left-3 top-[14px]">
