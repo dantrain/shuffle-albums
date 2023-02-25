@@ -42,7 +42,7 @@ const SettingsMenu = () => {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button
-          tw="fixed right-2 bottom-[calc(0.5rem + env(safe-area-inset-bottom))] sm:bottom-auto sm:top-2 block p-3 focus:outline-none rounded-full text-gray-400 sm:text-gray-200 hover:text-white focus-visible:ring focus-visible:ring-white"
+          tw="fixed right-2 bottom-[max(0.5rem, env(safe-area-inset-bottom))] sm:bottom-auto sm:top-2 block p-3 focus:outline-none rounded-full text-gray-400 sm:text-gray-200 hover:text-white focus-visible:ring focus-visible:ring-white"
           aria-label="Settings"
         >
           <GearIcon />
