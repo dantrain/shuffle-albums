@@ -137,8 +137,6 @@ const Album = ({
   const image = album.images[0];
   const useWebPlayer = useReadLocalStorage("useWebPlayer");
 
-  console.log(album);
-
   return (
     <>
       <div
