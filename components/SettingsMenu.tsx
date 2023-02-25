@@ -1,7 +1,7 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { CheckIcon, GearIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/router";
-import { ReactNode, useCallback } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import logout from "../utils/logout";
 
@@ -17,6 +17,26 @@ const SettingsMenu = () => {
     "useWebPlayer",
     false
   );
+
+  const [installPrompt, setInstallPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        setInstallPrompt(e as BeforeInstallPromptEvent);
+      });
+
+      window.addEventListener("appinstalled", () => {
+        setInstallPrompt(null);
+      });
+    }
+  }, []);
+
+  const handleInstall = useCallback(() => {
+    installPrompt?.prompt();
+  }, [installPrompt]);
 
   return (
     <DropdownMenu.Root>
@@ -49,6 +69,15 @@ const SettingsMenu = () => {
               Use web player
             </MenuItem>
           </DropdownMenu.CheckboxItem>
+          {!!installPrompt && (
+            <DropdownMenu.Item
+              className="group"
+              tw="focus:outline-none px-1 pb-1"
+              onClick={handleInstall}
+            >
+              <MenuItem>Install app</MenuItem>
+            </DropdownMenu.Item>
+          )}
           <DropdownMenu.Item
             className="group"
             tw="focus:outline-none px-1 pb-1"
