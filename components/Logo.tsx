@@ -1,6 +1,6 @@
 const Logo = () => {
   return (
-    <div tw="text-white w-[100px] fixed bottom-[15px] sm:bottom-auto sm:top-[15px] left-[15px]">
+    <div tw="text-white w-[100px] fixed bottom-[calc(15px + env(safe-area-inset-bottom))] sm:bottom-auto sm:top-[15px] left-[15px]">
       <svg viewBox="0 0 1134 340">
         <path
           fill="currentColor"
