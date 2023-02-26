@@ -81,6 +81,18 @@ const SettingsMenu = () => {
           <DropdownMenu.Item
             className="group"
             tw="focus:outline-none px-1 pb-1"
+          >
+            <a
+              tw="cursor-default"
+              href="https://www.buymeacoffee.com/dantrain"
+              target="_blank"
+            >
+              <MenuItem>Buy me a coffee</MenuItem>
+            </a>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            className="group"
+            tw="focus:outline-none px-1 pb-1"
             onClick={() => router.push("/privacy")}
           >
             <MenuItem>Privacy policy</MenuItem>
