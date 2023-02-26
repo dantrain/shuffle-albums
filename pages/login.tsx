@@ -25,15 +25,21 @@ const Login: NextPage = () => {
 
   return (
     <main tw="text-center p-6 flex flex-col min-h-[80vh] sm:min-h-screen">
-      <Spacer />
-      <h1 tw="font-black tracking-tight text-7xl mb-28 sm:text-8xl">
+      <Spacer factor={10} />
+      <h1 tw="font-black tracking-tight text-7xl sm:text-8xl">
         Shuffle Albums
       </h1>
+      <Spacer factor={0} />
+      <p>Shuffle your liked albums on Spotify.</p>
+      <Spacer factor={1} />
       <div tw="flex justify-center">
         <Button onClick={handleLogin}>Login with Spotify</Button>
       </div>
-      <Spacer factor={3} />
-      <Link tw="text-gray-400 hover:text-white hover:underline" href="/privacy">
+      <Spacer factor={30} />
+      <Link
+        tw="fixed bottom-6 left-1/2 -translate-x-1/2 text-gray-400 hover:text-white hover:underline"
+        href="/privacy"
+      >
         Privacy policy
       </Link>
     </main>
