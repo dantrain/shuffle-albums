@@ -1,12 +1,19 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { CheckIcon, GearIcon } from "@radix-ui/react-icons";
+import {
+  CheckIcon,
+  DownloadIcon,
+  ExitIcon,
+  ExternalLinkIcon,
+  GearIcon,
+  ReloadIcon,
+} from "@radix-ui/react-icons";
 import { useRouter } from "next/router";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import logout from "../utils/logout";
 
 const MenuItem = ({ children }: { children: ReactNode }) => (
-  <div tw="group-hover:bg-[rgba(255, 255, 255, 0.1)] group-focus-visible:bg-[rgba(255, 255, 255, 0.1)] relative min-w-[200px] p-3 pl-8 rounded-sm">
+  <div tw="flex justify-between items-center group-hover:bg-[rgba(255, 255, 255, 0.1)] group-focus-visible:bg-[rgba(255, 255, 255, 0.1)] relative min-w-[200px] p-3 pl-8 rounded-sm">
     {children}
   </div>
 );
@@ -17,6 +24,8 @@ const SettingsMenu = () => {
     "useWebPlayer",
     false
   );
+
+  const [isStandalone, setIsStandalone] = useState(false);
 
   const [installPrompt, setInstallPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
@@ -31,6 +40,12 @@ const SettingsMenu = () => {
       window.addEventListener("appinstalled", () => {
         setInstallPrompt(null);
       });
+
+      setIsStandalone(
+        window.matchMedia(
+          "(display-mode: standalone), (display-mode: fullscreen)"
+        ).matches
+      );
     }
   }, []);
 
@@ -69,13 +84,23 @@ const SettingsMenu = () => {
               Use web player
             </MenuItem>
           </DropdownMenu.CheckboxItem>
+          <DropdownMenu.Item
+            className="group"
+            tw="focus:outline-none px-1 pb-1"
+            onClick={() => router.push("/privacy")}
+          >
+            <MenuItem>Privacy policy</MenuItem>
+          </DropdownMenu.Item>
           {!!installPrompt && (
             <DropdownMenu.Item
               className="group"
               tw="focus:outline-none px-1 pb-1"
               onClick={handleInstall}
             >
-              <MenuItem>Install app</MenuItem>
+              <MenuItem>
+                Install app
+                <DownloadIcon />
+              </MenuItem>
             </DropdownMenu.Item>
           )}
           <DropdownMenu.Item
@@ -87,22 +112,32 @@ const SettingsMenu = () => {
               href="https://www.buymeacoffee.com/dantrain"
               target="_blank"
             >
-              <MenuItem>Buy me a coffee</MenuItem>
+              <MenuItem>
+                Buy me a coffee
+                <ExternalLinkIcon />
+              </MenuItem>
             </a>
           </DropdownMenu.Item>
-          <DropdownMenu.Item
-            className="group"
-            tw="focus:outline-none px-1 pb-1"
-            onClick={() => router.push("/privacy")}
-          >
-            <MenuItem>Privacy policy</MenuItem>
-          </DropdownMenu.Item>
+          {isStandalone && (
+            <DropdownMenu.Item
+              className="group"
+              tw="focus:outline-none px-1 pb-1"
+              onClick={() => location.reload()}
+            >
+              <MenuItem>
+                Reload <ReloadIcon />
+              </MenuItem>
+            </DropdownMenu.Item>
+          )}
           <DropdownMenu.Item
             className="group"
             tw="focus:outline-none px-1 pb-1"
             onClick={() => logout(router)}
           >
-            <MenuItem>Log out</MenuItem>
+            <MenuItem>
+              Log out
+              <ExitIcon />
+            </MenuItem>
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
