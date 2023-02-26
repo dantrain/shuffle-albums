@@ -30,7 +30,7 @@ const Login: NextPage = () => {
         Shuffle Albums
       </h1>
       <Spacer factor={0} />
-      <p>Shuffle your liked albums on Spotify.</p>
+      <p tw="text-gray-400">Shuffle your liked albums on Spotify.</p>
       <Spacer factor={1} />
       <div tw="flex justify-center">
         <Button onClick={handleLogin}>Login with Spotify</Button>
