@@ -37,7 +37,7 @@ const Login: NextPage = () => {
       </div>
       <Spacer factor={30} />
       <Link
-        tw="fixed bottom-6 left-1/2 -translate-x-1/2 text-gray-400 hover:text-white hover:underline"
+        tw="fixed bottom-[max(1.5rem, env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 text-gray-400 hover:text-white hover:underline"
         href="/privacy"
       >
         Privacy policy
