@@ -1,5 +1,12 @@
-import { forwardRef, ComponentPropsWithoutRef, ReactNode } from "react";
+import {
+  forwardRef,
+  ComponentPropsWithoutRef,
+  ReactNode,
+  Ref,
+  useState,
+} from "react";
 import Link from "next/link";
+import { usePress, mergeProps } from "react-aria";
 
 type ButtonBaseProps = {
   children?: ReactNode;
@@ -17,33 +24,44 @@ type ButtonAsLink = ButtonBaseProps &
 
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
-const buttonClassName =
-  "cursor-pointer block px-8 py-3.5 text-sm font-bold tracking-widest text-white uppercase rounded-full bg-spotify-green focus:outline-none focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-3 focus-visible:ring-offset-background [@media(hover:hover)]:hover:scale-104 [@media(hover:hover)]:active:scale-100 [@media(hover:hover)]:focus-visible:active:scale-95 [@media(hover:none)]:active:scale-95 antialiased";
+const baseClassName =
+  "cursor-pointer block px-8 py-3.5 text-sm font-bold tracking-widest text-white uppercase rounded-full bg-spotify-green focus:outline-none focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-3 focus-visible:ring-offset-background [@media(hover:hover)]:hover:scale-104 [@media(hover:hover)]:active:scale-100 antialiased select-none";
 
-const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-  (props, ref) => {
-    if (props.as === Link) {
-      const { as: _, ...linkProps } = props as ButtonAsLink;
-      return (
-        <Link
-          ref={ref as React.Ref<HTMLAnchorElement>}
-          className={buttonClassName}
-          {...linkProps}
-        />
-      );
-    }
+const Button = forwardRef(function Button(
+  props: ButtonProps,
+  ref: Ref<HTMLButtonElement | HTMLAnchorElement>,
+) {
+  const [pointerType, setPointerType] = useState("");
 
-    const { as: _, ...buttonProps } = props as ButtonAsButton;
+  const { pressProps, isPressed } = usePress({
+    onPressStart: (e) => setPointerType(e.pointerType),
+    onPressEnd: () => setPointerType(""),
+  });
+
+  // Only scale down for touch/keyboard, not mouse (mouse uses CSS hover→active)
+  const showScaleDown = isPressed && pointerType !== "mouse";
+
+  const className = `${baseClassName} ${showScaleDown ? "scale-95!" : ""}`;
+
+  if (props.as === Link) {
+    const { as: _, ...linkProps } = props as ButtonAsLink;
     return (
-      <button
-        ref={ref as React.Ref<HTMLButtonElement>}
-        className={buttonClassName}
-        {...buttonProps}
+      <Link
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        className={className}
+        {...mergeProps(pressProps, linkProps)}
       />
     );
-  },
-);
+  }
 
-Button.displayName = "Button";
+  const { as: _, ...buttonProps } = props as ButtonAsButton;
+  return (
+    <button
+      ref={ref as React.Ref<HTMLButtonElement>}
+      className={className}
+      {...mergeProps(pressProps, buttonProps)}
+    />
+  );
+});
 
 export default Button;
