@@ -34,10 +34,14 @@ const useAlbumsCount = () => {
 const getOffset = (shuffledOffsets: number[], index: number) =>
   shuffledOffsets[index % shuffledOffsets.length];
 
+const EXIT_DURATION = 200;
+
 const AlbumShuffler = () => {
   const { total } = useAlbumsCount();
   const [shuffledOffsets, setShuffledOffsets] = useState<number[]>([]);
   const [index, setIndex] = useState(0);
+  const queueRef = useRef<Array<"forward" | "backward">>([]);
+  const isProcessingRef = useRef(false);
 
   useEffect(() => {
     if (total) {
@@ -46,13 +50,33 @@ const AlbumShuffler = () => {
     }
   }, [total]);
 
-  const handleForward = useCallback(() => {
-    setIndex((index) => index + 1);
+  const processQueue = useCallback(() => {
+    if (isProcessingRef.current || queueRef.current.length === 0) return;
+
+    isProcessingRef.current = true;
+    const action = queueRef.current.shift()!;
+
+    if (action === "forward") {
+      setIndex((index) => index + 1);
+    } else {
+      setIndex((index) => Math.max(0, index - 1));
+    }
+
+    setTimeout(() => {
+      isProcessingRef.current = false;
+      processQueue();
+    }, EXIT_DURATION);
   }, []);
 
+  const handleForward = useCallback(() => {
+    queueRef.current.push("forward");
+    processQueue();
+  }, [processQueue]);
+
   const handleBackward = useCallback(() => {
-    setIndex((index) => Math.max(0, index - 1));
-  }, []);
+    queueRef.current.push("backward");
+    processQueue();
+  }, [processQueue]);
 
   useHotkeys("right", handleForward);
   useHotkeys("left", handleBackward);
@@ -72,7 +96,7 @@ const AlbumShuffler = () => {
         {...swipeHandlers}
       >
         <TransitionGroup>
-          <Transition key={offset} timeout={{ exit: 200 }}>
+          <Transition key={offset} timeout={{ exit: EXIT_DURATION }}>
             {(state) => <Album offset={offset} state={state} />}
           </Transition>
         </TransitionGroup>
