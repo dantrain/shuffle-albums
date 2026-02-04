@@ -38,7 +38,7 @@ const Progress = () => {
       setAnimationState({ isAnimating: false, maxProgress: 0 });
       timeoutRef.current = setTimeout(() => {
         setAnimationState({ isAnimating: true, maxProgress: 1 });
-      }, 1000);
+      }, 2000);
     } else {
       setAnimationState((prev) => ({ ...prev, isAnimating: false }));
     }
