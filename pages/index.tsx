@@ -40,8 +40,10 @@ const AlbumShuffler = () => {
   const { total } = useAlbumsCount();
   const [shuffledOffsets, setShuffledOffsets] = useState<number[]>([]);
   const [index, setIndex] = useState(0);
+  const [transitionKey, setTransitionKey] = useState(0);
   const queueRef = useRef<Array<"forward" | "backward">>([]);
   const isProcessingRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (total) {
@@ -49,6 +51,24 @@ const AlbumShuffler = () => {
       setIndex(0);
     }
   }, [total]);
+
+  // Safety net: detect stacking and force remount if needed
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const checkForStacking = () => {
+      const albums = container.querySelectorAll("[data-album]");
+      if (albums.length > 2) {
+        setTransitionKey((k) => k + 1);
+        isProcessingRef.current = false;
+        queueRef.current = [];
+      }
+    };
+
+    const interval = setInterval(checkForStacking, EXIT_DURATION);
+    return () => clearInterval(interval);
+  }, []);
 
   const processQueue = useCallback(() => {
     if (isProcessingRef.current || queueRef.current.length === 0) return;
@@ -105,15 +125,17 @@ const AlbumShuffler = () => {
         style={{ maxWidth: "clamp(25rem, calc(100vh - 25rem), 640px)" }}
         {...swipeHandlers}
       >
-        <TransitionGroup>
-          <Transition
-            key={offset}
-            timeout={{ exit: EXIT_DURATION }}
-            onExited={handleExited}
-          >
-            {(state) => <Album offset={offset} state={state} />}
-          </Transition>
-        </TransitionGroup>
+        <div ref={containerRef}>
+          <TransitionGroup key={transitionKey}>
+            <Transition
+              key={offset}
+              timeout={{ exit: EXIT_DURATION }}
+              onExited={handleExited}
+            >
+              {(state) => <Album offset={offset} state={state} />}
+            </Transition>
+          </TransitionGroup>
+        </div>
       </div>
       <div className="flex justify-center">
         <Button onClick={handleForward}>Shuffle</Button>
@@ -196,7 +218,7 @@ const Album = ({
 
   return (
     <>
-      <div className={getClassName()} style={getStyle()}>
+      <div data-album className={getClassName()} style={getStyle()}>
         <AlbumArt
           href={useWebPlayer ? album.external_urls.spotify : album.uri}
           src={image.url}
