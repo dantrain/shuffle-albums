@@ -53,21 +53,16 @@ const AlbumShuffler = () => {
   }, [total]);
 
   // Safety net: detect stacking and force remount if needed
-  useEffect(() => {
+  const checkForStacking = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const checkForStacking = () => {
-      const albums = container.querySelectorAll("[data-album]");
-      if (albums.length > 2) {
-        setTransitionKey((k) => k + 1);
-        isProcessingRef.current = false;
-        queueRef.current = [];
-      }
-    };
-
-    const interval = setInterval(checkForStacking, EXIT_DURATION);
-    return () => clearInterval(interval);
+    const albums = container.querySelectorAll("[data-album]");
+    if (albums.length > 2) {
+      setTransitionKey((k) => k + 1);
+      isProcessingRef.current = false;
+      queueRef.current = [];
+    }
   }, []);
 
   const processQueue = useCallback(() => {
@@ -89,6 +84,7 @@ const AlbumShuffler = () => {
   }, [processQueue]);
 
   const handleForward = useCallback(() => {
+    checkForStacking();
     // Limit queue to 1 pending action to prevent stacking
     if (queueRef.current.length === 0) {
       queueRef.current.push("forward");
@@ -96,9 +92,10 @@ const AlbumShuffler = () => {
       queueRef.current[0] = "forward";
     }
     processQueue();
-  }, [processQueue]);
+  }, [checkForStacking, processQueue]);
 
   const handleBackward = useCallback(() => {
+    checkForStacking();
     // Limit queue to 1 pending action to prevent stacking
     if (queueRef.current.length === 0) {
       queueRef.current.push("backward");
@@ -106,7 +103,7 @@ const AlbumShuffler = () => {
       queueRef.current[0] = "backward";
     }
     processQueue();
-  }, [processQueue]);
+  }, [checkForStacking, processQueue]);
 
   useHotkeys("right", handleForward);
   useHotkeys("left", handleBackward);
