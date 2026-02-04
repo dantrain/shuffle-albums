@@ -61,20 +61,30 @@ const AlbumShuffler = () => {
     } else {
       setIndex((index) => Math.max(0, index - 1));
     }
-
-    setTimeout(() => {
-      isProcessingRef.current = false;
-      processQueue();
-    }, EXIT_DURATION);
   }, []);
 
+  const handleExited = useCallback(() => {
+    isProcessingRef.current = false;
+    processQueue();
+  }, [processQueue]);
+
   const handleForward = useCallback(() => {
-    queueRef.current.push("forward");
+    // Limit queue to 1 pending action to prevent stacking
+    if (queueRef.current.length === 0) {
+      queueRef.current.push("forward");
+    } else {
+      queueRef.current[0] = "forward";
+    }
     processQueue();
   }, [processQueue]);
 
   const handleBackward = useCallback(() => {
-    queueRef.current.push("backward");
+    // Limit queue to 1 pending action to prevent stacking
+    if (queueRef.current.length === 0) {
+      queueRef.current.push("backward");
+    } else {
+      queueRef.current[0] = "backward";
+    }
     processQueue();
   }, [processQueue]);
 
@@ -96,7 +106,11 @@ const AlbumShuffler = () => {
         {...swipeHandlers}
       >
         <TransitionGroup>
-          <Transition key={offset} timeout={{ exit: EXIT_DURATION }}>
+          <Transition
+            key={offset}
+            timeout={{ exit: EXIT_DURATION }}
+            onExited={handleExited}
+          >
             {(state) => <Album offset={offset} state={state} />}
           </Transition>
         </TransitionGroup>
