@@ -58,7 +58,8 @@ const AlbumShuffler = () => {
     if (!container) return;
 
     const albums = container.querySelectorAll("[data-album]");
-    if (albums.length > 2) {
+    // After debounce delay, exits should be complete - only 1 album expected
+    if (albums.length > 1) {
       setTransitionKey((k) => k + 1);
       isProcessingRef.current = false;
       queueRef.current = [];
@@ -83,8 +84,18 @@ const AlbumShuffler = () => {
     processQueue();
   }, [processQueue]);
 
+  // Debounced check for stacking after activity settles
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const debouncedCheckForStacking = useCallback(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      checkForStacking();
+    }, EXIT_DURATION + 100);
+  }, [checkForStacking]);
+
   const handleForward = useCallback(() => {
-    checkForStacking();
     // Limit queue to 1 pending action to prevent stacking
     if (queueRef.current.length === 0) {
       queueRef.current.push("forward");
@@ -92,10 +103,10 @@ const AlbumShuffler = () => {
       queueRef.current[0] = "forward";
     }
     processQueue();
-  }, [checkForStacking, processQueue]);
+    debouncedCheckForStacking();
+  }, [processQueue, debouncedCheckForStacking]);
 
   const handleBackward = useCallback(() => {
-    checkForStacking();
     // Limit queue to 1 pending action to prevent stacking
     if (queueRef.current.length === 0) {
       queueRef.current.push("backward");
@@ -103,7 +114,8 @@ const AlbumShuffler = () => {
       queueRef.current[0] = "backward";
     }
     processQueue();
-  }, [checkForStacking, processQueue]);
+    debouncedCheckForStacking();
+  }, [processQueue, debouncedCheckForStacking]);
 
   useHotkeys("right", handleForward);
   useHotkeys("left", handleBackward);
