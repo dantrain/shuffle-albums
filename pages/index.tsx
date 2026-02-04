@@ -91,16 +91,8 @@ const AlbumShuffler = () => {
       clearTimeout(debounceRef.current);
     }
     debounceRef.current = setTimeout(() => {
-      // Check across 50ms of frames after animations should have completed
-      const startTime = performance.now();
-      const checkFrames = () => {
-        requestAnimationFrame(() => {
-          checkForStacking();
-          if (performance.now() - startTime < 50) checkFrames();
-        });
-      };
-      checkFrames();
-    }, EXIT_DURATION);
+      checkForStacking();
+    }, EXIT_DURATION + 50);
   }, [checkForStacking]);
 
   const handleForward = useCallback(() => {
