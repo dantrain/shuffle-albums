@@ -1,6 +1,6 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { GlobalStyles } from "twin.macro";
+import "../styles/globals.css";
 
 const App = ({ Component, pageProps }: AppProps) => (
   <>
@@ -11,7 +11,6 @@ const App = ({ Component, pageProps }: AppProps) => (
         content="width=device-width, initial-scale=1.0, viewport-fit=cover"
       />
     </Head>
-    <GlobalStyles />
     <Component {...pageProps} />
   </>
 );

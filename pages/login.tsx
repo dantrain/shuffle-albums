@@ -15,7 +15,7 @@ const Login: NextPage = () => {
     const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
 
     const redirectUri = encodeURIComponent(
-      `${window.location.origin}/logincallback`
+      `${window.location.origin}/logincallback`,
     );
 
     const url = `https://accounts.spotify.com/authorize?client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}&response_type=code&redirect_uri=${redirectUri}&code_challenge_method=S256&code_challenge=${codeChallenge}&state=${state}&scope=user-library-read`;
@@ -24,20 +24,20 @@ const Login: NextPage = () => {
   };
 
   return (
-    <main tw="text-center p-6 flex flex-col min-h-[80vh] sm:min-h-screen">
+    <main className="text-center p-6 flex flex-col min-h-[80vh] sm:min-h-screen">
       <Spacer factor={10} />
-      <h1 tw="font-black tracking-tight text-7xl sm:text-8xl">
+      <h1 className="font-black tracking-tight text-7xl sm:text-8xl">
         Shuffle Albums
       </h1>
       <Spacer factor={0} />
-      <p tw="text-gray-400">Shuffle your liked albums on Spotify.</p>
+      <p className="text-gray-400">Shuffle your liked albums on Spotify.</p>
       <Spacer factor={1} />
-      <div tw="flex justify-center">
+      <div className="flex justify-center">
         <Button onClick={handleLogin}>Login with Spotify</Button>
       </div>
       <Spacer factor={30} />
       <Link
-        tw="fixed bottom-[max(1.5rem, env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 text-gray-400 hover:text-white hover:underline"
+        className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 text-gray-400 hover:text-white hover:underline"
         href="/privacy"
       >
         Privacy policy

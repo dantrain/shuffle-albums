@@ -1,4 +1,3 @@
-import fetch from "isomorphic-unfetch";
 import memoizeOne from "memoize-one";
 import router from "next/dist/client/router";
 import PubSub from "pubsub-js";
@@ -22,7 +21,7 @@ const refreshAccessToken = memoizeOne(async (refreshToken: string) => {
   localStorage.setItem("access_token", data.access_token);
   localStorage.setItem(
     "access_token_expiry",
-    (Date.now() + parseInt(data.expires_in, 10) * 1000).toString()
+    (Date.now() + parseInt(data.expires_in, 10) * 1000).toString(),
   );
   localStorage.setItem("refresh_token", data.refresh_token);
 
@@ -31,7 +30,7 @@ const refreshAccessToken = memoizeOne(async (refreshToken: string) => {
 
 const fetcher = async <JSON = any>(
   path: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<JSON> => {
   let accessToken = localStorage.getItem("access_token");
   const accessTokenExpiry = localStorage.getItem("access_token_expiry");

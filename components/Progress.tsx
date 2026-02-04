@@ -1,6 +1,6 @@
 import { useNProgress } from "@tanem/react-nprogress";
 import PubSub from "pubsub-js";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Progress = () => {
   const [inFlight, setInFlight] = useState(0);
@@ -12,7 +12,7 @@ const Progress = () => {
       if (data === "REQUEST_END")
         timeout = setTimeout(
           () => setInFlight((state) => Math.max(0, state - 1)),
-          50
+          50,
         );
     });
 
@@ -23,51 +23,57 @@ const Progress = () => {
   }, []);
 
   const isLoading = inFlight > 0;
-
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [maxProgress, setMaxProgress] = useState(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [animationState, setAnimationState] = useState({
+    isAnimating: false,
+    maxProgress: 0,
+  });
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
-
-    if (isLoading) {
-      setMaxProgress(0);
-
-      timeout = setTimeout(() => {
-        setIsAnimating(true);
-        setMaxProgress(1);
-      }, 500);
-    } else {
-      setIsAnimating(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
 
-    return () => clearTimeout(timeout);
+    if (isLoading) {
+      setAnimationState({ isAnimating: false, maxProgress: 0 });
+      timeoutRef.current = setTimeout(() => {
+        setAnimationState({ isAnimating: true, maxProgress: 1 });
+      }, 500);
+    } else {
+      setAnimationState((prev) => ({ ...prev, isAnimating: false }));
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [isLoading]);
 
   const { animationDuration, isFinished, progress } = useNProgress({
-    isAnimating,
+    isAnimating: animationState.isAnimating,
   });
 
   return (
     <div
-      tw="pointer-events-none absolute top-0 inset-x-0 h-1 overflow-hidden"
+      className="pointer-events-none absolute top-0 inset-x-0 h-1 overflow-hidden"
       style={{
         opacity: isFinished ? 0 : 1,
         transition: `opacity ${animationDuration}ms linear`,
       }}
     >
       <div
-        tw="absolute left-0 z-50 h-[2px] w-full"
+        className="absolute left-0 z-50 h-[2px] w-full"
         style={{
-          marginLeft: `${(-1 + Math.min(maxProgress, progress)) * 100}%`,
+          marginLeft: `${(-1 + Math.min(animationState.maxProgress, progress)) * 100}%`,
           transition: `margin-left ${animationDuration}ms linear`,
         }}
       >
         <div
-          tw="absolute right-0 h-full w-28 translate-y-[-4px] translate-x-[1px] rotate-3 bg-spotify-green"
+          className="absolute right-0 h-full w-28 translate-y-[-4px] translate-x-[1px] rotate-3 bg-spotify-green"
           style={{ boxShadow: "0 0 10px #1eb854, 0 0 5px #1eb854" }}
         />
-        <div tw="relative z-10 h-full w-full bg-spotify-green"></div>
+        <div className="relative z-10 h-full w-full bg-spotify-green"></div>
       </div>
     </div>
   );

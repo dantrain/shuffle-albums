@@ -6,14 +6,14 @@ const withPWA = require("next-pwa")({
 
 module.exports = withPWA({
   reactStrictMode: true,
-  webpack: (config) => {
-    // Unset client-side javascript that only works server-side
-    config.resolve.fallback = { fs: false, module: false };
-
-    return config;
-  },
+  turbopack: {},
   images: {
-    domains: ["i.scdn.co"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.scdn.co",
+      },
+    ],
     unoptimized: true,
   },
 });

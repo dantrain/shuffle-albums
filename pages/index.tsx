@@ -6,14 +6,14 @@ import React, {
   Suspense,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { GlobalHotKeys } from "react-hotkeys";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useSwipeable } from "react-swipeable";
 import { Transition, TransitionGroup } from "react-transition-group";
 import useSWR from "swr/immutable";
-import tw, { css } from "twin.macro";
 import { useReadLocalStorage } from "usehooks-ts";
 import AlbumArt from "../components/AlbumArt";
 import Button from "../components/Button";
@@ -54,6 +54,9 @@ const AlbumShuffler = () => {
     setIndex((index) => Math.max(0, index - 1));
   }, []);
 
+  useHotkeys("right", handleForward);
+  useHotkeys("left", handleBackward);
+
   const swipeHandlers = useSwipeable({
     onSwipedUp: handleForward,
     onSwipedDown: handleBackward,
@@ -63,13 +66,9 @@ const AlbumShuffler = () => {
 
   return shuffledOffsets.length ? (
     <>
-      <GlobalHotKeys
-        keyMap={{ FORWARD: "right", BACKWARD: "left" }}
-        handlers={{ FORWARD: handleForward, BACKWARD: handleBackward }}
-      />
       <div
-        tw="relative mx-auto text-center"
-        css="max-width: clamp(25rem, calc(100vh - 25rem), 640px)"
+        className="relative mx-auto text-center"
+        style={{ maxWidth: "clamp(25rem, calc(100vh - 25rem), 640px)" }}
         {...swipeHandlers}
       >
         <TransitionGroup>
@@ -78,10 +77,10 @@ const AlbumShuffler = () => {
           </Transition>
         </TransitionGroup>
       </div>
-      <div tw="flex justify-center">
+      <div className="flex justify-center">
         <Button onClick={handleForward}>Shuffle</Button>
       </div>
-      <div tw="sr-only">
+      <div className="sr-only">
         <Suspense fallback={<></>}>
           {range(4).map((rangeIndex) => (
             <Album
@@ -137,41 +136,48 @@ const Album = ({
   const image = album.images[0];
   const useWebPlayer = useReadLocalStorage("useWebPlayer");
 
+  const getClassName = () => {
+    const base = "mb-8 transition duration-200 aspect-square overflow-clip";
+    if (state === "exiting") {
+      return `${base} absolute top-0 w-full opacity-0 ease-[cubic-bezier(0.55,0.055,0.675,0.19)]`;
+    }
+    if (state === "entering") {
+      return `${base} scale-95 opacity-30`;
+    }
+    return `${base} ease-[cubic-bezier(0.215,0.61,0.355,1)]`;
+  };
+
+  const getStyle = (): React.CSSProperties | undefined => {
+    if (state === "exiting") {
+      return {
+        transform: `translateY(-200%) translateX(${(offset % 20) - 10}%) rotate(${(offset % 20) - 10}deg)`,
+      };
+    }
+    return undefined;
+  };
+
   return (
     <>
-      <div
-        css={[
-          tw`mb-8 transition duration-200 aspect-square overflow-clip`,
-          state === "exiting" && [
-            tw`absolute top-0 w-full opacity-0 ease-in-quad`,
-            css`
-              transform: translateY(-200%) translateX(${(offset % 20) - 10}%)
-                rotate(${(offset % 20) - 10}deg);
-            `,
-          ],
-          state === "entering" && tw`scale-95 ease-out-cubic opacity-30`,
-        ]}
-      >
+      <div className={getClassName()} style={getStyle()}>
         <AlbumArt
           href={useWebPlayer ? album.external_urls.spotify : album.uri}
           src={image.url}
           alt={album.name}
-          disableFocus={hidden}
+          disableFocus={hidden || state === "exiting"}
         />
       </div>
       {hidden || state === "exiting" ? null : (
         <>
-          <p tw="mb-2 text-2xl font-bold line-clamp-1 h-8">
+          <p className="mb-2 text-2xl font-bold line-clamp-1 h-8">
             <a
               href={useWebPlayer ? album.external_urls.spotify : album.uri}
               target={useWebPlayer ? "_blank" : undefined}
               rel="noreferrer"
-              tabIndex={hidden ? -1 : undefined}
             >
               {album.name}
             </a>
           </p>
-          <p tw="text-lg text-gray-400 mb-8 line-clamp-1 h-7">
+          <p className="text-lg text-gray-400 mb-8 line-clamp-1 h-7">
             {album.artists
               .map((artist) => (
                 <a
@@ -181,14 +187,13 @@ const Album = ({
                   }
                   target={useWebPlayer ? "_blank" : undefined}
                   rel="noreferrer"
-                  tabIndex={hidden ? -1 : undefined}
                 >
                   {artist.name}
                 </a>
               ))
               .reduce(
                 (acc, curr) => (acc.length ? [...acc, ", ", curr] : [curr]),
-                [] as ReactNode[]
+                [] as ReactNode[],
               )}
           </p>
         </>
@@ -209,7 +214,7 @@ const Error = () => {
 
 const Home: NextPage = () => {
   return (
-    <main tw="relative p-6 sm:py-24 w-screen">
+    <main className="relative p-6 sm:py-24 w-screen">
       <Progress />
       <ErrorBoundary FallbackComponent={Error}>
         <Logo />

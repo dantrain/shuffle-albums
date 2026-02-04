@@ -40,3 +40,5 @@ yarn-error.log*
 # Ignoring Claude for now
 .claude
 CLAUDE.md
+
+certificates

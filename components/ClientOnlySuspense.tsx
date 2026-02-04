@@ -1,18 +1,19 @@
 import React, {
   Suspense as ReactSuspense,
   SuspenseProps,
-  useEffect,
-  useState,
+  useSyncExternalStore,
 } from "react";
 
-const ClientOnlySuspense = (props: SuspenseProps) => {
-  const [mounted, setMounted] = useState(false);
+const subscribe = () => () => {};
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
 
-  useEffect(() => {
-    if (!mounted && typeof window !== "undefined") {
-      setMounted(true);
-    }
-  }, [mounted]);
+const ClientOnlySuspense = (props: SuspenseProps) => {
+  const mounted = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   return mounted ? <ReactSuspense {...props} /> : <>{props.fallback}</>;
 };
