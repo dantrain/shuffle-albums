@@ -134,7 +134,14 @@ const AlbumShuffler = () => {
         style={{ maxWidth: "clamp(25rem, calc(100vh - 25rem), 640px)" }}
         {...swipeHandlers}
       >
-        <div ref={containerRef}>
+        <div
+          ref={containerRef}
+          className="overflow-hidden"
+          style={{
+            maxHeight:
+              "calc(clamp(25rem, calc(100vh - 25rem), 640px) + 8.25rem)",
+          }}
+        >
           <TransitionGroup key={transitionKey}>
             <Transition
               key={offset}
