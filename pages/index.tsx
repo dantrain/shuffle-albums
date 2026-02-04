@@ -139,7 +139,7 @@ const AlbumShuffler = () => {
           className="overflow-hidden"
           style={{
             maxHeight:
-              "calc(clamp(25rem, calc(100vh - 25rem), 640px) + 8.25rem)",
+              "calc(min(100vw - 3rem, clamp(25rem, calc(100vh - 25rem), 640px)) + 8.25rem)",
           }}
         >
           <TransitionGroup key={transitionKey}>
