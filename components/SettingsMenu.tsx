@@ -7,7 +7,7 @@ import {
   GearIcon,
   ReloadIcon,
 } from "@radix-ui/react-icons";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import logout from "../utils/logout";

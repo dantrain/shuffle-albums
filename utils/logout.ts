@@ -1,6 +1,6 @@
-import { NextRouter } from "next/router";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
-const logout = (router: NextRouter) => {
+const logout = (router: AppRouterInstance) => {
   localStorage.removeItem("access_token");
   localStorage.removeItem("access_token_expiry");
   localStorage.removeItem("refresh_token");

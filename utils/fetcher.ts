@@ -1,5 +1,4 @@
 import memoizeOne from "memoize-one";
-import router from "next/dist/client/router";
 import PubSub from "pubsub-js";
 
 const refreshAccessToken = memoizeOne(async (refreshToken: string) => {
@@ -37,7 +36,7 @@ const fetcher = async <JSON = any>(
   const refreshToken = localStorage.getItem("refresh_token");
 
   if (!accessToken || !accessTokenExpiry || !refreshToken) {
-    await router.push("/login");
+    window.location.href = "/login";
     throw new Error("Not logged in");
   }
 

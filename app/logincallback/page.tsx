@@ -1,9 +1,10 @@
-import type { NextPage } from "next";
-import { useRouter } from "next/dist/client/router";
-import { useEffect } from "react";
-import logout from "../utils/logout";
+"use client";
 
-const LoginCallback: NextPage = () => {
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import logout from "../../utils/logout";
+
+export default function LoginCallback() {
   const router = useRouter();
 
   useEffect(() => {
@@ -43,14 +44,14 @@ const LoginCallback: NextPage = () => {
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem(
               "access_token_expiry",
-              (Date.now() + parseInt(data.expires_in, 10) * 1000).toString()
+              (Date.now() + parseInt(data.expires_in, 10) * 1000).toString(),
             );
             localStorage.setItem("refresh_token", data.refresh_token);
           } else {
             throw new Error("Missing data");
           }
 
-          await router.push("/");
+          router.push("/");
         } catch (e) {
           logout(router);
         }
@@ -63,6 +64,4 @@ const LoginCallback: NextPage = () => {
   }, [router]);
 
   return <></>;
-};
-
-export default LoginCallback;
+}

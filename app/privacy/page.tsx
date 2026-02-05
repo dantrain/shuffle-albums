@@ -1,9 +1,10 @@
-import { NextPage } from "next";
-import Link from "next/link";
-import Button from "../components/Button";
-import Spacer from "../components/Spacer";
+"use client";
 
-const Privacy: NextPage = () => {
+import Link from "next/link";
+import Button from "../../components/Button";
+import Spacer from "../../components/Spacer";
+
+export default function Privacy() {
   return (
     <main className="text-center p-6 flex flex-col min-h-screen">
       <Spacer />
@@ -26,6 +27,4 @@ const Privacy: NextPage = () => {
       <Spacer factor={3} />
     </main>
   );
-};
-
-export default Privacy;
+}

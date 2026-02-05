@@ -1,6 +1,7 @@
+"use client";
+
 import { range, shuffle } from "lodash-es";
-import type { NextPage } from "next";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, {
   ReactNode,
   Suspense,
@@ -44,9 +45,11 @@ const AlbumShuffler = () => {
   const queueRef = useRef<Array<"forward" | "backward">>([]);
   const isProcessingRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const lastTotalRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
-    if (total) {
+    if (total && total !== lastTotalRef.current) {
+      lastTotalRef.current = total;
       setShuffledOffsets(shuffle(range(total)));
       setIndex(0);
     }
@@ -143,13 +146,11 @@ const AlbumShuffler = () => {
           }}
         >
           <TransitionGroup key={transitionKey}>
-            <Transition
+            <TransitionedAlbum
               key={offset}
-              timeout={{ exit: EXIT_DURATION }}
+              offset={offset}
               onExited={handleExited}
-            >
-              {(state) => <Album offset={offset} state={state} />}
-            </Transition>
+            />
           </TransitionGroup>
         </div>
       </div>
@@ -169,6 +170,28 @@ const AlbumShuffler = () => {
       </div>
     </>
   ) : null;
+};
+
+const TransitionedAlbum = ({
+  offset,
+  onExited,
+  in: inProp,
+}: {
+  offset: number;
+  onExited: () => void;
+  in?: boolean;
+}) => {
+  const nodeRef = useRef<HTMLDivElement>(null);
+  return (
+    <Transition
+      nodeRef={nodeRef}
+      in={inProp}
+      timeout={{ exit: EXIT_DURATION }}
+      onExited={onExited}
+    >
+      {(state) => <Album ref={nodeRef} offset={offset} state={state} />}
+    </Transition>
+  );
 };
 
 const useAlbum = (offset: number) => {
@@ -199,15 +222,14 @@ const useAlbum = (offset: number) => {
   return { album: data?.items[0].album! };
 };
 
-const Album = ({
-  offset,
-  hidden,
-  state,
-}: {
-  offset: number;
-  hidden?: boolean;
-  state?: string;
-}) => {
+const Album = React.forwardRef<
+  HTMLDivElement,
+  {
+    offset: number;
+    hidden?: boolean;
+    state?: string;
+  }
+>(function Album({ offset, hidden, state }, ref) {
   const { album } = useAlbum(offset);
   const image = album.images[0];
   const useWebPlayer = useReadLocalStorage("useWebPlayer");
@@ -234,7 +256,7 @@ const Album = ({
 
   return (
     <>
-      <div data-album className={getClassName()} style={getStyle()}>
+      <div ref={ref} data-album className={getClassName()} style={getStyle()}>
         <AlbumArt
           href={useWebPlayer ? album.external_urls.spotify : album.uri}
           src={image.url}
@@ -276,7 +298,7 @@ const Album = ({
       )}
     </>
   );
-};
+});
 
 const Error = () => {
   const router = useRouter();
@@ -288,7 +310,7 @@ const Error = () => {
   return null;
 };
 
-const Home: NextPage = () => {
+export default function Home() {
   return (
     <main className="relative p-6 sm:py-24 w-screen">
       <Progress />
@@ -301,6 +323,4 @@ const Home: NextPage = () => {
       </ErrorBoundary>
     </main>
   );
-};
-
-export default Home;
+}

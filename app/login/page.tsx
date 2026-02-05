@@ -1,10 +1,14 @@
-import type { NextPage } from "next";
-import Link from "next/link";
-import Button from "../components/Button";
-import Spacer from "../components/Spacer";
-import { generateRandomString, pkceChallengeFromVerifier } from "../utils/auth";
+"use client";
 
-const Login: NextPage = () => {
+import Link from "next/link";
+import Button from "../../components/Button";
+import Spacer from "../../components/Spacer";
+import {
+  generateRandomString,
+  pkceChallengeFromVerifier,
+} from "../../utils/auth";
+
+export default function Login() {
   const handleLogin = async () => {
     const state = generateRandomString();
     localStorage.setItem("pkce_state", state);
@@ -44,6 +48,4 @@ const Login: NextPage = () => {
       </Link>
     </main>
   );
-};
-
-export default Login;
+}

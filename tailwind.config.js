@@ -1,5 +1,5 @@
 module.exports = {
-  content: ["./components/**/*.{ts,tsx}", "./pages/**/*.{ts,tsx}"],
+  content: ["./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {
