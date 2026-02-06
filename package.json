@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "pwa-assets": "pwa-asset-generator logo.svg public/ -b \"#000000\" -t png -p \"20%\""
   },
   "dependencies": {
